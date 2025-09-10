@@ -1,3 +1,4 @@
+% !TeX document-id = {4719ec8f-70f7-4005-9222-7d90db5fa2e2}
 % !TeX spellcheck = en-US
 % !TeX encoding = utf8
 % !TeX program = pdflatex
@@ -28,7 +29,7 @@
 
 
 \usepackage[
-  title={Is Oil the future?},
+  title={},
   author={Lars K.},
   type=bachelor,
   institute=iaas, % or other institute names - or just a plain string using {Demo\\Demo...}
@@ -213,9 +214,29 @@ This thesis starts with \cref{chap:k2}.
 
 We can also typeset \verb|<text>verbatim text</text>|.
 Backticks are also rendered correctly: \verb|`words in backticks`|.
+With the growing capabilities of AI in recent years its usage has become more widely adopted with some sources claiming 280 million global users in 2024 \cite{AI-users} with projections of up to 1 billion users in 2030.
 
-\chapter{Chapter Two}
+Besides the very popular Llms there are the generative models which have adapted a wide variety of use cases such as music, video and image generation. 
+
+For the purpose of this thesis we will regard image generation models. These have made great advances in the past years and the best models such as mid-journey\cite{midjourney}, stable diffusion \cite{stable-diffusion}, or even GPT-4o \cite{GPT-4o} are capable of creating impressive images that are capable of creating photo realistic images and paintings in many other art styles and art forms they are limited by very little and allow people to explore their creativity. 
+
+The most common approach in working with am image generation models is providing a textual prompt from which the model then generates an image, other prompt medias include pictures or sounds. With this approach the problem arises that the user doesn't know how the model will process the prompt exactly. For the average user the model is a black box and getting the desired image by tweaking the prompt can be a challenging and sometimes feel arbitrary, the goal here be to understand how changes in the prompt impact the generated picture. 
+\chapter{Background}
 \label{chap:k2}
+This section serves as an introduction to topics, concepts and techniques that are relevant to understanding this thesis, introducing the topics of generative models, diffusion models LLms, prompt engineering, vectorization of images dimensionality reduction and visualization techniques. 
+\section{Generative models}
+%strutcure
+%Definition: Learning data distributions to generate novel samples
+%Key distinction from discriminative models
+
+%Broad applications: image synthesis, text generation, audio, video
+
+Generative models are a relatively recent phenomenon in the field of AI, they aim to create new unseen data that fits the data they have been trained upon. The most prominent of them are image generation models with the first models capable of generating complex images emerging in 2013 they are called VAE (variational autoencoders) named after the architecture they are based on (Auto-Encoding Variational Bayes) and work by making stochastic sampling differentiable \cite{kingma2022autoencodingvariationalbayes}, however early adaptations resulted in blury and low resolution images.
+Then in 2014 goodfellow et. all {goodfellow2014generativeadversarialnetworks} proposed a new process for estimating generative models using an adverserial approach, this is realized by using a two part architecture in training, a generator and a discriminator both neural networks. The generator outputs a sample from noise and the discriminator tries to classify whether that sample is a from a real data distribution or generated based on the result of the discriminator the generators weights are adjusted to result in a less distinguishable output. This approach results in more realistic higher quality images, since the generator is trained to "fool" the discriminator into thinking its output is real. 
+
+
+
+
 
 LaTeX hints are provided in \cref{chap:latexhints}.
 
