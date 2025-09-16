@@ -1,4 +1,6 @@
-% !TeX document-id = {4719ec8f-70f7-4005-9222-7d90db5fa2e2}
+\begin{center}
+	
+\end{center}% !TeX document-id = {4719ec8f-70f7-4005-9222-7d90db5fa2e2}
 % !TeX spellcheck = en-US
 % !TeX encoding = utf8
 % !TeX program = pdflatex
@@ -223,7 +225,7 @@ For the purpose of this thesis we will regard image generation models. These hav
 The most common approach in working with am image generation models is providing a textual prompt from which the model then generates an image, other prompt medias include pictures or sounds. With this approach the problem arises that the user doesn't know how the model will process the prompt exactly. For the average user the model is a black box and getting the desired image by tweaking the prompt can be a challenging and sometimes feel arbitrary, the goal here be to understand how changes in the prompt impact the generated picture. 
 \chapter{Background}
 \label{chap:k2}
-This section serves as an introduction to topics, concepts and techniques that are relevant to understanding this thesis, introducing the topics of generative models, diffusion models LLms, prompt engineering, vectorization of images dimensionality reduction and visualization techniques. 
+This section serves as an introduction to topics, concepts and techniques that are relevant to understanding this thesis, introducing the topics of generative models, diffusion models Large-Language-Models (LLMs), prompt engineering, vectorization of images, dimensionality reduction, pixel based comparison and visualization techniques. 
 \section{Generative models}
 %strutcure
 %Definition: Learning data distributions to generate novel samples
@@ -234,8 +236,20 @@ This section serves as an introduction to topics, concepts and techniques that a
 Generative models are a relatively recent phenomenon in the field of AI, they aim to create new unseen data that fits the data they have been trained upon. The most prominent of them are image generation models with the first models capable of generating complex images emerging in 2013 they are called VAE (variational autoencoders) named after the architecture they are based on (Auto-Encoding Variational Bayes) and work by making stochastic sampling differentiable \cite{kingma2022autoencodingvariationalbayes}, however early adaptations resulted in blury and low resolution images.
 Then in 2014 goodfellow et. all {goodfellow2014generativeadversarialnetworks} proposed a new process for estimating generative models using an adverserial approach, this is realized by using a two part architecture in training, a generator and a discriminator both neural networks. The generator outputs a sample from noise and the discriminator tries to classify whether that sample is a from a real data distribution or generated based on the result of the discriminator the generators weights are adjusted to result in a less distinguishable output. This approach results in more realistic higher quality images, since the generator is trained to "fool" the discriminator into thinking its output is real. 
 
+In 2017 Vaswani et al pusblished their breakthrough paper \verb|“Attention Is All You Need”| \cite{vaswani2023attentionneed} introducing transformer architecture for AI %self-attention, positional encoding, encoder–decoder structure 
+originally intended for sequence-to-sequence tasks their adaptation too generative AI was very successful, with early models using transformer architecture like GPT-1 \cite{GPT-1} and BERT \cite{devlin2019bertpretrainingdeepbidirectional} being quite capable for their respective tasks. However early transformer models for image generation such as Image Transformer \cite{parmar2018imagetransformer} struggeled with producing high quality images, while later attempts and hybrid architecture led to better performance generating images. Then in 2020 Ho et. al published their landmark paper "Denoising Diffusion Probabilistic Models" where they adpated diffusion models for image generation running on transformers.
+Subsequent improvements of the approach make diffsion models the state-of-the-art for image generation, which is why they were used for image generation in this work. %add reference to stable diffusion or models being used for live generation
 
+\section{LLMs}
+Large-Language-Models (LLMs) have emerged in the field of natural language processing (nlp) but have since transcended their original purpose, most of them function by predicting the next token utilizing a transformer architecture and large scale pre-training on massive amounts of data they are able to achieve impressive results text generation and summarization to translation, reasoning, and dialogue. Their big breakthrough was in 2020 with Brown et al. publishing GPT-3 \cite{brown2020languagemodelsfewshotlearners} first showing  that scaling the number of parameters and training data substantially improves performance. However despite their impressive capabilities LLMs are faced with several drawbacks, they are computationally expensive requiring large resource hungry data centers to train and service request at scale, additionally they may show bias or inaccuracy in their responses depending on the underlying training data, which makes sourcing quality data at the required scale a major challenge LLM developers face. Another negative is their non applicability in safety critical environments due to hallucination, where the model generates plausible but incorrect outputs.
 
+\section{prompt engineering}
+In order to use the LLMs introduced in the last section we need to "prompt" them that means entering a text or an image with instructions for the LLM. However what and how we type the prompt is important for the performance of the model as zhang et al. \cite{zhang2025understandingrelationshippromptsresponse} and li et al. \cite{li2024effectsdifferentpromptsquality} have shown for their respective selected tasks. This importance of the prompt has created a whole new field of research called "prompt engineering" where people are trying to find techniques and tricks to improve the LLM output or even get past certain restrictions. 
+To achieve accurate results some prompt engineering principles were also employed in this thesis.
+
+\section{vectorization of images}
+Comparing images is an old and non-trivial problem that is also afflicted by subjectivity, as humans might rate different images as more similar or dissimilar based on individual factors. Human evaluation also takes longer and is more costly which is why a mathematical method is crucial. 
+One way is to transform an image into something with many pre-existing comparison methods such as a vector where mathmatical similarity measurements are well established 
 
 
 LaTeX hints are provided in \cref{chap:latexhints}.
