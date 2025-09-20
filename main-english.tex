@@ -30,14 +30,14 @@
 
 \usepackage[
   title={},
-  author={Lars K.},
+  author={Oliver Seiz},
   type=bachelor,
-  institute=iaas, % or other institute names - or just a plain string using {Demo\\Demo...}
-  course={Medieninformatik},
-  examiner={Prof.\ Dr.\ Uwe Fessor},
-  supervisor={Dipl.-Inf.\ Roman Tiker,\\Dipl.-Inf.\ Laura Stern,\\Otto Normalverbraucher,\ M.Sc.},
-  startdate={July 5, 2018},
-  enddate={January 5, 2019}
+  institute=visus, % or other institute names - or just a plain string using {Demo\\Demo...}
+  course={Informatik},
+  examiner={Dr. Steffen Koch},
+  supervisor={Jena Satkunaranjan},
+  startdate={April 10, 2025},
+  enddate={Oktober 10, 2025}
 ]{scientific-thesis-cover}
 
 \input{acronyms}
@@ -250,17 +250,47 @@ Comparing images is an old and non-trivial problem that is also afflicted by sub
 One way is to transform an image into something with many pre-existing comparison methods such as a vector where mathematical similarity measurements are well established. There are several ways to turn an image into a vector such as the "classical" approach where feature extraction is hand-engineered such as SIFT \cite{inbook}, however due to greater generalizability, automatic feature extraction and usually better performance methods using specifically trained machine learning models are generally preferred. Which was also the case in this thesis, where the Img2Vec library \cite{patel2019img2vec} was utilized.
 
 \section{vector dimensonality reduction}
+In dimensionality reduction we try to reduce the dimension of a given data points while trying to preserve certain properties and relationships between the data points, in our case we are interested in the similarity of the given data points. I utilized Umap which builds a nearest neighbour graph utilizing fuzzy sets in the higher dimensional space and then tries to preserve this realtionship in lower dimensional spaces usally 2D or 3D. 
+As data pojnts we utilize the vectors we get from the previous section where we try to preserver their similarity while projecting them onto 2d space thus we are able to plot them on a simple 2d graph which is visually one of the most intuitive for humans to grasp. 
+
+\section{pixel based comparison}
 
 
 
 
 LaTeX hints are provided in \cref{chap:latexhints}.
 
-\blinddocument
+%\blinddocument
 
 \chapter{Related Work}
+This chapter gives an overview of pre-existing concepts and work related to this thesis 
 
+
+\section{Prompt Engineering and Visualization}
+Mishra et al. (2023) \cite{mishra2025promptaidpromptexplorationperturbation} introduced PromptAid, an interactive system for prompt exploration and iteration when using large language models. Their approach aims to support inexperienced users in creating more effective prompts. Their framework contains three semi-automated strategies: keyword perturbations (replacing or varying keywords), paraphrasing perturbations (rewriting or changing phrasing), and "selecting an optimal set of in-context few-shot examples" which they aim to visualize for the user. This allows users to easily generate prompt iterations analyze and compare the outcomes and iteratively adjust the prompt. \\
+
+Similarly, Brade et al. (2023) \cite{brade2023promptifytexttoimagegenerationinteractive} introduced PromptiFy a framework for prompt suggestion and result visulaziation, they achieve this by utilizing three interrative main methods in their framework 1."automatic prompt extension and suggestion" here the user can first select a general theme for which the framework will query an LLM for suggestions and then an art style, then 2."image layout and clustering by similarity" where the suggested prompts will be send to the underlying model for generation and then displayed in a graph based on their similiarity (the closer the more similar), lastly
+ 3."automatic prompt refinement suggestions." where an LLM suggest refinements to the prompt to achieve different outcomes. 
+ This process again supports the user in finding suitable prompts.\\
+
+
+
+ Guo et al. (2024) \cite{guo2024prompthisvisualizingprocessinfluence} presented PrompTHis, a visual analytics tool that highlights the process and influence of prompt editing during text-to-image creation. They achieved this by remebering the history of prompt and image pairs and plotting them in a specially designed graph they call an Image Variant Graph. This supports the user in aquiring an understanding of the impact of prompt changes to the image, enabeling them to closer control and influence the generation of the model. 
+
+
+
+add figures for promptaid and promptthis?
 Describe relevant scientific literature related to your work.
+\section{Visualization in Generative Models}
+
+
+\section{Concept Drift in Generative models}
+Traditionally, concept drift in machine learning refers to a change in the mapping between input data and output labels over time. A model is trained on a particular data distribution, but as the relationship between data features and model classification shifts, its predictions become less reliable. For example, a spam email detector trained on data from five years ago may struggle today because spammers use new patterns and tactics that the model never learned, causing it to missclassify more modern spam.\\
+
+
+
+where a model has been trained under a certain data set (the training data), but the data it is now applied on has shifted from the training data set, making the model less effective 
+
 
 \chapter{Conclusion and Outlook}
 \label{chap:zusfas}
