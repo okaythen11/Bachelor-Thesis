@@ -282,6 +282,28 @@ Similarly, Brade et al. (2023) \cite{brade2023promptifytexttoimagegenerationinte
 add figures for promptaid and promptthis?
 Describe relevant scientific literature related to your work.
 \section{Visualization in Generative Models}
+\section{Visualization of large data sets and high dimensional data}
+In order to visualize large data sets graphs usually are the go to approach however some things are harder to plot than others, while it might be easy to plot a quarterly profits report plotting high dimensional data like text, videos or images is a different challenge especially when wanting to plot them relative to each other. In our case plotting images based on their similarity, this is challenging due to a lot of traditional measures to determine the similarity of images returning a single number (depending on the implementation usually the closer that number to 0 the similar the images), additionally the similarity is usually measured between 2 images then for larger data sets with possibly hundreds of images we'd have to chose 1 starting image from the data set and compare it all the others to gain our similarity score. This has some potential issues 1. it might not give an accurate representation of the images towards each other when plotted (2 very different images could end up with a very similar difference score to the chosen starting image) making such a measure potentially ineffective for visualizing data. 2. This makes plotting the data in a meaningful way hard as viewing the data on a 1D number line doesn't utilize the full screen space and observes have a harder time to view and relate all the data (as they have to pan from left to right having a larger distance between data points). Also plotting the data in a raster where we go from left to right in descending similarity wouldn't properly quantifying how similar images are  (2 images that are very similar to each other could be next to an image very dissimilar from these first 2), losing that entire dimension of the data in the visualization. \\
+Thus research has been done to be able to preserve the similarity relationship while utilizing 2 or 3 dimensions with the first major breakthrough in that direction being t-SNE \cite{van2008visualizing}.
+
+t-Distributed Stochastic Neighbor Embedding \cite{van2008visualizing} is a
+nonlinear dimensionality reduction technique that has been widely adopted for
+visualizing high-dimensional data. The method models pairwise similarities between
+points in both the original space and the low-dimensional embedding as probability
+distributions, and seeks to minimize their divergence. The cost function is given by
+\begin{equation}
+	C = KL(P \,\|\, Q) = \sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}},
+\end{equation}
+where $P$ represents similarities in the high-dimensional space and $Q$ those in
+the embedding. This approach effectively preserves local neighborhood structure.
+However due to its high 
+computational cost and limited scalability.
+Uniform Manifold Approximation and Projection (UMAP) has been proposed as an
+alternative that retains the benefits of t-SNE while offering improved speed and
+better preservation of global structure. Making it the prefered choice for larger data sets.
+
+
+\section{visualization of sentences}
 
 
 \section{Concept Drift in Generative models}
