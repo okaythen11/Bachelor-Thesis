@@ -214,13 +214,16 @@ This thesis starts with \cref{chap:k2}.
 
 We can also typeset \verb|<text>verbatim text</text>|.
 Backticks are also rendered correctly: \verb|`words in backticks`|.
-With the growing capabilities of AI in recent years its usage has become more widely adopted with some sources claiming 280 million global users in 2024 \cite{AI-users} with projections of up to 1 billion users in 2030.
 
-Besides the very popular Llms there are the generative models which have adapted a wide variety of use cases such as music, video and image generation. 
+With the growing capabilities of AI-models in recent years, its usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030.
 
-For the purpose of this thesis we will regard image generation models. These have made great advances in the past years and the best models such as mid-journey\cite{midjourney}, stable diffusion \cite{stable-diffusion}, or even GPT-4o \cite{GPT-4o} are capable of creating impressive images that are capable of creating photo realistic images and paintings in many other art styles and art forms they are limited by very little and allow people to explore their creativity. 
+Perhaps the most popular models LLMs capable of impressive language understanding and reasoning tasks, besides them there are generative models which have found a wide variety of use cases for music, video, and mainly image generation. 
 
-The most common approach in working with am image generation models is providing a textual prompt from which the model then generates an image, other prompt medias include pictures or sounds. With this approach the problem arises that the user doesn't know how the model will process the prompt exactly. For the average user the model is a black box and getting the desired image by tweaking the prompt can be a challenging and sometimes feel arbitrary, the goal here be to understand how changes in the prompt impact the generated picture. 
+Perhaps the most popular AI models today are LLMs, which demonstrate impressive language understanding and reasoning capabilities. Alongside them, generative models have emerged, finding use cases in music, video, and mainly image generation. These models can create entire complex, high-quality scenes within seconds, thanks to major advances in recent years. Leading examples such as MidJourney \cite{midjourney}, Stable Diffusion \cite{stable-diffusion}, and GPT-4o \cite{GPT-4o} are able to produce photo-realistic images as well as artworks in many different styles and forms. They allow people to explore their creativity with few technical limitations, shifting the main challenge toward effective goal driven usage of them. 
+
+The most common approach when using image generation models is providing a textual prompt from which the model then generates an image. Other forms of prompts include pictures or sounds, but text remains the most widely used. The problem with the textual  approach is its ambiguity, the user does not know how exactly the model will process the prompt or what the main drivers for changes in image output are. More concisely to the average user, the model behaves like a black box. Consequently getting the desired result by tweaking the prompt can be challenging and sometimes feel arbitrary.
+
+The goal of this thesis is therefore to conceptualize and develop a visual-interactive approach that helps to understand how changes in a prompt impact the generated image.For this we will introduce an interactive framework between 2 graphs as well as a prompting aid for the user.
 \chapter{Background}
 \label{chap:k2}
 This section serves as an introduction to topics, concepts and techniques that are relevant to understanding this thesis, introducing the topics of generative models, diffusion models Large-Language-Models (LLMs), prompt engineering, vectorization of images, vector dimensionality reduction, pixel based comparison and visualization techniques. 
@@ -254,7 +257,7 @@ In dimensionality reduction we try to reduce the dimension of a given data point
 As data pojnts we utilize the vectors we get from the previous section where we try to preserver their similarity while projecting them onto 2d space thus we are able to plot them on a simple 2d graph which is visually one of the most intuitive for humans to grasp. 
 
 \section{pixel based comparison}
-
+Evaluating the similarity between images is an important step in many image processing tasks such as compression, denoising, and enhancement. Traditional measures like Mean Squared Error (MSE) or Peak Signal-to-Noise Ratio (PSNR) compare images directly at the pixel level. While simple and efficient, these methods often do not reflect how humans perceive visual quality. To address this gap, more perceptually similar approaches such as the Structural Similarity Index (SSIM) \cite{ssim} have been introduced. SSIM goes beyond raw pixel differences by incorporating luminance, contrast, and structural information, which makes it better aligned with human visual perception. As a result, SSIM has become a widely used standard for assessing image quality in both research and applied settings.
 
 
 
@@ -308,10 +311,17 @@ better preservation of global structure. Making it the prefered choice for large
 
 \section{Concept Drift in Generative models}
 Traditionally, concept drift in machine learning refers to a change in the mapping between input data and output labels over time. A model is trained on a particular data distribution, but as the relationship between data features and model classification shifts, its predictions become less reliable. For example, a spam email detector trained on data from five years ago may struggle today because spammers use new patterns and tactics that the model never learned, causing it to missclassify more modern spam.\\
+In this thesis concept drift refers to the changing the intent of the user while prompting the image generation model. Where in a normal use case it is likely that the prompt will be adjusted altered modified and specified many times in order to achieve the desired end result. This work aims to visualize that process and easy narrowing in on a desired prompt by providing an overview between the image and the prompt space hopefully allowing the user to identify what parts of the image changes based on the changes in the prompt.
 
 
 
 where a model has been trained under a certain data set (the training data), but the data it is now applied on has shifted from the training data set, making the model less effective 
+\chapter{Approach}
+This work aims to highlight the relationship between prompt and generated image in order for the user to better understand how changes in the prompt affect the generated images. \\
+For this an interactive approach is chosen  between a visualization of the images and the prompts.\\ Research led to chose a 2D scatterplot for images where circles with the indivudial image inside are vectorized and  displayed based on their similarity determined by U-map. To display the prompts and allow their easy readability and association with its corresponding prompt a sideways dag-tree was chosen where nodes are computed via the following steps 1. clean up the prompt, removing all special characters numbers and remove articles, pronouns, Auxiliary verbs and some prepositions (of, to, and, or, for) aswell as (with, without, from, by, as) while keeping others (in, at, on) that are deemed to be semantically significant for the image generation. 2. The inital nodes are formed consisting of the word and the position at which it occurs we only look at unique word positions words that appeared already are disregarded though their relationships (parent-child) are recorded, additionally we save whether the word has a child or whether any prompt ends with the word position pair. 3. We merge nodes that only have 1 child and which no prompt ends with. 4. collapse adjacent nodes with same entries 5. Last a couple sweeps with the barycenter heuristic to reduce edge crossings
+
+For 
+\section{implementation}
 
 
 \chapter{Conclusion and Outlook}
