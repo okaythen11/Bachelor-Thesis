@@ -318,11 +318,96 @@ In this thesis concept drift refers to the changing the intent of the user while
 where a model has been trained under a certain data set (the training data), but the data it is now applied on has shifted from the training data set, making the model less effective 
 \chapter{Approach}
 This work aims to highlight the relationship between prompt and generated image in order for the user to better understand how changes in the prompt affect the generated images. \\
-For this an interactive approach is chosen  between a visualization of the images and the prompts.\\ Research led to chose a 2D scatterplot for images where circles with the indivudial image inside are vectorized and  displayed based on their similarity determined by U-map. To display the prompts and allow their easy readability and association with its corresponding prompt a sideways dag-tree was chosen where nodes are computed via the following steps 1. clean up the prompt, removing all special characters numbers and remove articles, pronouns, Auxiliary verbs and some prepositions (of, to, and, or, for) aswell as (with, without, from, by, as) while keeping others (in, at, on) that are deemed to be semantically significant for the image generation. 2. The inital nodes are formed consisting of the word and the position at which it occurs we only look at unique word positions words that appeared already are disregarded though their relationships (parent-child) are recorded, additionally we save whether the word has a child or whether any prompt ends with the word position pair. 3. We merge nodes that only have 1 child and which no prompt ends with. 4. collapse adjacent nodes with same entries 5. Last a couple sweeps with the barycenter heuristic to reduce edge crossings
+A major challenge is visualizing the connection between the prompt and the image especially for many the prompt image pairs that are normally created during the creative process when utilizing an image generation model.\\
+For this an interactive approach is chosen  between a visualization of the images and the prompts.\\ Research led to chose a 2D scatterplot for images where circles with the indivudial image inside are vectorized and  displayed based on their similarity determined by U-map. To display the prompts and allow their easy readability and association with its corresponding prompt a sideways dag-tree was chosen where nodes are computed via the following steps 1. clean up the prompt, removing all special characters numbers and remove articles, pronouns, Auxiliary verbs and some prepositions (of, to, and, or, for) aswell as (with, without, from, by, as) while keeping others (in, at, on) that are deemed to be semantically significant for the image generation. 2. The inital nodes are formed consisting of the word and the position at which it occurs we only look at unique word positions words that appeared already are disregarded though their relationships (parent-child) are recorded, additionally we save whether the word has a child or whether any prompt ends with the word position pair. 3. We merge nodes that only have 1 child and which no prompt ends with. 4. collapse adjacent nodes with same entries 5. Last a couple sweeps with the barycenter heuristic to reduce edge crossings.\\
 
-For 
-\section{implementation}
 
+
+
+\section{dag}
+In the following the dag progression for different steps will be shown to visualize the changes. In order for them to be easier to follow only 5 prompts will be chosen. We can see that initially relations between the prompts are hard to glean, even with only 5 prompts comparing the text and identifying the similarities and difference is quite a chore for the human visual complex. Removing stop and function words makes it a little easier due to the text content decreasing however it's still hard and will only exponentially increase in difficulty when adding more prompts (imagine trying to compare 50 or 100 prompts "by hand").\\
+Just by aggregating words at the same position and indicating their relation via edges we can already see noticeable improvements, which are only further pronounced when collapsing nodes containing "phrase words", words that appear at that position only next to a relative.\\
+However we have lost the crucial information of what nodes belong together with multiple new sentences being possible when just following the graph structure, due to the an edge aggregations followed by an edge split. To remedy this a hover function is introduced where when hovering a node all the node relatives from the original data are shown. This allows for an easier overview and and comparability of the nodes, this approach can scale quite well if prompts are sufficiently similar (if all prompts would differ at every position we'd just have a prompt list again).
+
+\begin{figure}[H]        % 'h' = place here (optional)
+	\centering           % centers the image
+	\includegraphics[width=\linewidth]{DAGNothingApplied2.png}
+	\caption{Raw prompts with no aggregation or processing}
+	\label{fig:dagPure}  % optional: for referencing
+\end{figure}
+\begin{figure}[H]        % 'h' = place here (optional)
+	\centering           % centers the image
+	\includegraphics[width=\linewidth]{DAGTokenized.png}
+	\caption{Prompts with stop and some function words removed}
+	\label{fig:dagTokenized}  % optional: for referencing
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth, trim=4cm 1cm 4cm 1cm, clip]{DAGNotCollapsed.png}
+	\caption{DAG with nodes at same position merged with edges indicating relationships noticeably reduced size }
+	\label{fig:dagMerged}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth, trim=4cm 1cm 4cm 1cm, clip]{DAGCollapsed.png}
+	\caption{DAG with nodes collapsed if there are unique to that order and sequence, aswell as neighbourhing nodes collapsed if they have the same content (not the case here so no changes from second collapse)}
+	\label{fig:dagCollapsed}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth, trim=4cm 1cm 4cm 1cm, clip]{DAGPathSelected.png}
+	\caption{Node selected showing the path (ancestors,descendants) of the node relative to the original input data}
+	\label{dagPath}
+\end{figure}
+
+\section{scatterplot}
+To represent the images a scatterplot was chosen, this was due to 2D representation providing the best overview and being easily understood, while it also helps that humans associate visual closeness with belonging together or to a grouping making the distance between the points being given by similarity being very effective with similar images having a close proximity for an easy overview. Initially the scatter plot only contained dots representing the respective images with a hover functionality displaying the image and prompt. This however didn't give an initial overview over the entire graph which is why instead of just dots the images themselves as small circles were plotted providing the user with a good inital overview over the data. Furthermore zooming and panning is implemented to ease use of the scatterplot and allow the user more control of what he sees and focuses on.
+\\Additionally a lens for image selection is introduced the lens can be varied in size allowing for larger or more precise selections, the selection is then highlighted and displayed in a grid next to a cursor. Ideally the images would be ordered based on similarity using for example SSIM as was the case in this work however for live interaction (the user sliding the lens over the scatterplot) SSIM or similar methods are with the current limitations of science and technology to slow, therefore the grid update sorted with a pixel based similarity measure only works in the live application for pre-computed values, which is in contrast to the goal of being able to change the prompt on the fly and adding the results live to the framework.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterplotRawDots.png}
+	\caption{ScatterPlot of 100 example iamges being plotted based on similarity }
+	\label{fig:scatterDots}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterplotRawHovered.png}
+	\caption{ScatterPlot with node hovered (unfortunately cursor doesn't show up in screenshot) }
+	\label{fig:scatterHovered}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterplotImages.png}
+	\caption{ScatterPlot with images as data indicators  }
+	\label{fig:scatterImages}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{gridNoSSIM.png}
+	\caption{ScatterPlot with Lens selection displaying grid without SSIM applied }
+	\label{fig:scatterNoSSIM}
+\end{figure}
+
+
+
+
+
+
+
+
+\section{graph interaction}
+
+\chapter{implementation}
+To realize the chosen design a web application utilizing d3 was implemented
+\section{d3}
+D3.js (Data-Driven Documents) is a JavaScript library for creating interactive and dynamic data visualizations in web environments. Unlike traditional libraries that provide fixed templates and charts, D3 gives developers fine-grained control over how data is bound to the graphical elements. It utilizes web standards such as HTML, SVG, and CSS, enabling flexible and highly customizable visualizations.
+
+The key strength of D3 is its declarative data binding: datasets can directly drive the creation, transformation, and styling of visual elements. This makes it possible to build anything from simple bar charts to complex, interactive dashboards or exploratory visual analytics systems. Because of this versatility, D3 has become one of the mostcommonly used tools for web-based data visualization in both research and industry.
+
+\section{general framework}
+For the general framework a web-application was chosen utilizing htmt, JS and css for the frontend and python for the backend.
+This allows for fast light weight prototyping and easy adpatability. 
 
 \chapter{Conclusion and Outlook}
 \label{chap:zusfas}
@@ -334,7 +419,7 @@ For
 All links were last followed on March 17, 2018.
 
 \appendix
-\input{latexhints-english}
+%\input{latexhints-english}
 
 \pagestyle{empty}
 \renewcommand*{\chapterpagestyle}{empty}

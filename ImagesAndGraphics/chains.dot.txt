@@ -1,0 +1,24 @@
+digraph chains {
+    rankdir=LR;
+    node [shape=plaintext, fontname="Helvetica"];
+
+    // Chain 1
+    "photo realistic" -> "tiger sitting" -> "on" -> "apple" -> "in" -> "starry night extremely high quality";
+
+    // Chain 2
+    "drawing" -> "fantasy" -> "cow" -> "spying" -> "on" -> "fish" -> "in" -> "barn" -> "extremely high quality";
+
+    // Chain 3
+    "photo realistic" -> "elephant" -> "munching" -> "on" -> "fish" -> "in" -> "forest masterpiece photography";
+
+    // Chain 4
+    "image" -> "fantasy" -> "elephant" -> "munching" -> "on" -> "fish" -> "in" -> "barn" -> "oil painting";
+
+    // Chain 5
+    "photo realistic" -> "elephant" -> "spying" -> "on" -> "fish" -> "in" -> "barn" -> "extremely high quality";
+}
+A Photo of a realistic Tiger sitting on a Apple in a starry night, extremely high quality
+A Photo of a realistic Elephant munching on a Fish in a Forest, masterpiece photography
+A Drawing of a fantasy Cow spying on a Fish in a Barn, extremely high quality
+A Photo of a realistic Elephant munching on a Fish in a Forest, masterpiece photography
+A Image of a fantasy Elephant munching on a Fish in a Barn, oil painting
