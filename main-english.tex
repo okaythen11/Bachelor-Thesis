@@ -362,7 +362,7 @@ However we have lost the crucial information of what nodes belong together with 
 
 \section{scatterplot}
 To represent the images a scatterplot was chosen, this was due to 2D representation providing the best overview and being easily understood, while it also helps that humans associate visual closeness with belonging together or to a grouping making the distance between the points being given by similarity being very effective with similar images having a close proximity for an easy overview. Initially the scatter plot only contained dots representing the respective images with a hover functionality displaying the image and prompt. This however didn't give an initial overview over the entire graph which is why instead of just dots the images themselves as small circles were plotted providing the user with a good inital overview over the data. Furthermore zooming and panning is implemented to ease use of the scatterplot and allow the user more control of what he sees and focuses on.
-\\Additionally a lens for image selection is introduced the lens can be varied in size allowing for larger or more precise selections, the selection is then highlighted and displayed in a grid next to a cursor. Ideally the images would be ordered based on similarity using for example SSIM as was the case in this work however for live interaction (the user sliding the lens over the scatterplot) SSIM or similar methods are with the current limitations of science and technology to slow, therefore the grid update sorted with a pixel based similarity measure only works in the live application for pre-computed values, which is in contrast to the goal of being able to change the prompt on the fly and adding the results live to the framework.
+\\Additionally a lens for image selection is introduced the lens can be varied in size allowing for larger or more precise selections, the selection is then highlighted and displayed in a grid next to a cursor. Ideally the images would be ordered based on similarity using for example SSIM as was the case in this work however for live interaction (the user sliding the lens over the scatterplot) SSIM or similar methods are with the current limitations of science and technology to slow, therefore the grid update sorted with a pixel based similarity measure only works in the live application for pre-computed values, which is in contrast to the goal of being able to change the prompt and generate images on the fly then adding the results to the framework immediately.
 
 \begin{figure}[H]
 	\centering
@@ -385,7 +385,19 @@ To represent the images a scatterplot was chosen, this was due to 2D representat
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{gridNoSSIM.png}
-	\caption{ScatterPlot with Lens selection displaying grid without SSIM applied }
+	\caption{ScatterPlot with Lens selection displaying grid unsorted }
+	\label{fig:scatterNoSSIM}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{gridGeometric.png}
+	\caption{ScatterPlot with Lens selection displaying grid sorted with SSIM}
+	\label{fig:scatterNoSSIM}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{gridGeometric.png}
+	\caption{ScatterPlot with Lens selection displaying grid with geometirc sorting}
 	\label{fig:scatterNoSSIM}
 \end{figure}
 
