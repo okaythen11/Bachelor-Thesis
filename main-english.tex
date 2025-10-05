@@ -221,10 +221,12 @@ Perhaps the most popular models LLMs capable of impressive language understandin
 
 Perhaps the most popular AI models today are LLMs, which demonstrate impressive language understanding and reasoning capabilities. Alongside them, generative models have emerged, finding use cases in music, video, and mainly image generation. These models can create entire complex, high-quality scenes within seconds, thanks to major advances in recent years. Leading examples such as MidJourney \cite{midjourney}, Stable Diffusion \cite{stable-diffusion}, and GPT-4o \cite{GPT-4o} are able to produce photo-realistic images as well as artworks in many different styles and forms. They allow people to explore their creativity with few technical limitations, shifting the main challenge toward effective goal driven usage of them. 
 
-The most common approach when using image generation models is providing a textual prompt from which the model then generates an image. Other forms of prompts include pictures or sounds, but text remains the most widely used. The problem with the textual  approach is its ambiguity, the user does not know how exactly the model will process the prompt or what the main drivers for changes in image output are. More concisely to the average user, the model behaves like a black box, which makes structured testing to analyze the models behavior given changing inputs difficult. Consequently getting the desired result can be challenging and sometimes feel arbitrary.\\
-Many attempts have been made to aid the user facing this problem such as extending and improving multi-modal inputs, for example the user being able to provide a text-prompt and a rough sketch to an image generation model allowing for more control as Lin et. al \cite{lin2025sketchflexfacilitatingspatialsemanticcoherence} among others have demonstrated. \\helping user adjust prompt \cite{10.1145/3729176.3729203,You2024Aesthetic}}
-%add promptthis pomptify promptaid references add promptcharm to related work 
-
+The most common approach when using image generation models is providing a textual prompt from which the model then generates an image. Other forms of prompts include pictures or sounds, but text remains the most widely used. The problem with the textual  approach is its ambiguity, the user does not know how exactly the model will process the prompt or what the main drivers for changes in image output are. More concisely to the average user, the model behaves like a black box, which makes structured testing to analyze the models behavior given changing inputs difficult, leading to many trial and error attempts of which are often to numerous to properly remember or categorize in a traditional setting. Consequently getting the desired result can be challenging and sometimes feel arbitrary.\\
+Many attempts have been made to aid the user facing these problems such as extending and improving multi-modal inputs, for example the user being able to provide a text-prompt and a rough sketch to an image generation model allowing for more control  \cite{lin2025sketchflexfacilitatingspatialsemanticcoherence}. \\Another promising direction is helping user adjust prompt automatically \cite{10.1145/3729176.3729203,You2024Aesthetic},
+as well as hybrid human in the loop approaches that offer both improving/adjusting prompt and visualizing the results together with the input (prompt) \cite{PromptMagician,mishra2025promptaidpromptexplorationperturbation,brade2023promptifytexttoimagegenerationinteractive,guo2024prompthisvisualizingprocessinfluence,promptCharm}
+%add promptthis pomptify promptaid references add promptcharm/promptmagician to related work 
+While these works focus on few prompt image pairs and more fine grain adjustments to understand and improve the prompt image relationship, in this work we try to implement a scale adjustable automated but customizable prompt variation and visualization tool.\\
+We aimed to achieve this through a frame work which has a basic text field that allows the user to customize how the an LLM will adjust and vary the prompt before generating. As well as 2 interactive graphs one being a scatterplot displaying the images based on similarity and the other being a text dag to visualize the prompts, both graphs have functionality that maps data from one to the other allowing the user to understand how the relationship between in and output
 The goal of this thesis is therefore to conceptualize and develop a visual-interactive approach that helps to understand how changes in a prompt impact the generated image.For this we will introduce an interactive framework between 2 graphs as well as a prompting aid for the user.\\
 
 \chapter{Background}
@@ -248,7 +250,8 @@ Subsequent improvements of the approach make diffsion models the state-of-the-ar
 Large-Language-Models (LLMs) have emerged in the field of natural language processing (nlp) but have since transcended their original purpose, most of them function by predicting the next token utilizing a transformer architecture and large scale pre-training on massive amounts of data they are able to achieve impressive results text generation and summarization to translation, reasoning, and dialogue. Their big breakthrough was in 2020 with Brown et al. publishing GPT-3 \cite{brown2020languagemodelsfewshotlearners} first showing  that scaling the number of parameters and training data substantially improves performance. However despite their impressive capabilities LLMs are faced with several drawbacks, they are computationally expensive requiring large resource hungry data centers to train and service request at scale, additionally they may show bias or inaccuracy in their responses depending on the underlying training data, which makes sourcing quality data at the required scale a major challenge LLM developers face. Another negative is their non applicability in safety critical environments due to hallucination, where the model generates plausible but incorrect outputs.
 
 \section{prompt engineering}
-In order to use the LLMs introduced in the last section we need to "prompt" them that means entering a text or an image with instructions for the LLM. However what and how we type the prompt is important for the performance of the model as zhang et al. \cite{zhang2025understandingrelationshippromptsresponse} and li et al. \cite{li2024effectsdifferentpromptsquality} have shown for their respective selected tasks. This importance of the prompt has created a whole new field of research called "prompt engineering" where people are trying to find techniques and tricks to improve the LLM output or even get past certain restrictions. 
+In order to use the models introduced in the last sections we need to "prompt" them that means entering a text or an image with instructions for the model based on which some output will be generated. Here what and how we type the prompt is important for the performance of the model as  \cite{zhang2025understandingrelationshippromptsresponse} and \cite{li2024effectsdifferentpromptsquality} have shown for their respective selected tasks. This importance of the prompt has created a whole new field of research called "prompt engineering" where people are trying to find techniques and tricks to improve model output or even bypass certain restrictions. This can be done by hand where humans try to improve prompts through trial-error and evaluation or automatically with some evaluation metric where algorithms or even other machine learning models test through many different prompts and evaluate their performance. This has resulted in several different techniques such as few-shot learning (FSL) \cite{few-shot} where the model is trained to learn a new task on a small (<100) number of labeled examples, the most useful few-shot approach for normal users is in-context learning \cite{in-contextlearning} where the users provides examples in the prompt, which the model than uses to infer a pattern which it then applies. \\ Other techniques include Chain-of \cite{chain-of-thought} which aims to improve the reasoning of an LLM by instructing it to show it's reasoning and including examples of intermediate reasoning steps in the prompt. It is especially useful for mathematical problem-solving and commonsense reasoning. Structured output prompting instructs the prompt to provide the response in a formatted way such that is fits for example a json or xml file, this is done to enable smooth parsing of an LLM response and especially useful when integrating the model in a framework or other pieces of automates software. Restricting the output format can negatively impact the performance in some cases especially reasoning tasks, it is however mostly consistent and depending on task and model sometimes even improves. \cite{tam2024letspeakfreelystudy}.
+
 To achieve accurate results some prompt engineering principles were also employed in this thesis.
 
 \section{vectorization of images}
@@ -273,15 +276,65 @@ This chapter gives an overview of pre-existing concepts and work related to this
 
 
 \section{Prompt Engineering and Visualization}
-Mishra et al. (2023) \cite{mishra2025promptaidpromptexplorationperturbation} introduced PromptAid, an interactive system for prompt exploration and iteration when using large language models. Their approach aims to support inexperienced users in creating more effective prompts. Their framework contains three semi-automated strategies: keyword perturbations (replacing or varying keywords), paraphrasing perturbations (rewriting or changing phrasing), and "selecting an optimal set of in-context few-shot examples" which they aim to visualize for the user. This allows users to easily generate prompt iterations analyze and compare the outcomes and iteratively adjust the prompt. \\
+Mishra et al. (2023) [MSA+25] introduced PromptAid, an interactive system for prompt exploration and iteration when using large language models. Their approach aims to support inexperienced users in creating more effective prompts. Their framework contains three semi-automated strategies: keyword perturbations (replacing or varying keywords), paraphrasing perturbations (rewriting or changing phrasing), and \enquote {selecting an optimal set of in-context few-shot examples}which they aim to visualize for the user. This allows users to easily generate prompt iterations, analyze and compare the outcomes, and iteratively adjust the prompt. \\
+  \begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{promptaidInterface.png}
+	\caption{prompt aid interface with model selection, explorable prompt space, prompt analysis section, comparison and recommendations. Taken from \cite{mishra2025promptaidpromptexplorationperturbation}}
+	\label{fig:promptAid}
+\end{figure}
 
-Similarly, Brade et al. (2023) \cite{brade2023promptifytexttoimagegenerationinteractive} introduced PromptiFy a framework for prompt suggestion and result visulaziation, they achieve this by utilizing three interrative main methods in their framework 1."automatic prompt extension and suggestion" here the user can first select a general theme for which the framework will query an LLM for suggestions and then an art style, then 2."image layout and clustering by similarity" where the suggested prompts will be send to the underlying model for generation and then displayed in a graph based on their similiarity (the closer the more similar), lastly
+Similarly for image generation models, Brade et al. (2023) \cite{brade2023promptifytexttoimagegenerationinteractive} introduced PromptiFy a framework for prompt suggestion and result visulaziation, they achieve this by utilizing three interrative main methods in their framework 1."automatic prompt extension and suggestion" here the user can first select a general theme for which the framework will query an LLM for suggestions and then an art style, then 2."image layout and clustering by similarity" where the suggested prompts will be send to the underlying model for generation and then displayed in a graph based on their similiarity (the closer the more similar), lastly
  3."automatic prompt refinement suggestions." where an LLM suggest refinements to the prompt to achieve different outcomes. 
- This process again supports the user in finding suitable prompts.\\
+ This process again supports the user in finding suitable prompts and understanding the prompt output relationship.\\
+  \begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{promptifyInterface.png}
+	\caption{ Figure 1 shows the Promptify system interface, which consists of six main components: (A) controls for writing prompts and configuring Stable Diffusion parameters, (B) an automatic suggestion module that provides subject matter ideas and style keywords through natural language steering, (C) an interactive canvas for viewing and organizing generated images with drag-and-drop clustering capabilities, (D) a minimap for navigation and cluster overview, (E) controls for adjusting image positioning and spacing based on similarity, and (F) a prompt history panel for managing previous prompts and their associated images. Image taken from \cite{mishra2025promptaidpromptexplorationperturbation}}
+	\label{fig:promptify}
+\end{figure}
 
 
-
- Guo et al. (2024) \cite{guo2024prompthisvisualizingprocessinfluence} presented PrompTHis, a visual analytics tool that highlights the process and influence of prompt editing during text-to-image creation. They achieved this by remebering the history of prompt and image pairs and plotting them in a specially designed graph they call an Image Variant Graph. This supports the user in aquiring an understanding of the impact of prompt changes to the image, enabeling them to closer control and influence the generation of the model. 
+ Guo et al. (2024) \cite{guo2024prompthisvisualizingprocessinfluence} presented PrompTHis, a visual analytics tool that highlights the process and influence of prompt editing during text-to-image creation. They achieved this by remebering the history of prompt and image pairs and plotting them in a specially designed graph they call an Image Variant Graph. This supports the user in aquiring an understanding of the impact of prompt changes to the image, enabeling them to closer control and influence the generation of the model.\\
+ 
+  \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=\linewidth]{promptThisInterface.png}
+ 	\caption{ taken from \cite{guo2024prompthisvisualizingprocessinfluence}}
+ 	\label{fig:promptThis}
+ \end{figure}
+ 
+ 
+ 
+ 
+ 
+ Promptcharm \cite{promptCharm} takes a hybrid user-in-the-loop framework which offers automated prompt improvement, result visualization while also allowing inpainting and showing and changing model attention of different keywords. Inpainting gives the user the ability to mark undesired areas for the model to change, adjusting the model attention influences how much weight is placed on the keyword influencing the subsequent generation. While their automated prompt improvement leverages Promptist \cite{hao2023optimizingpromptstexttoimagegeneration} helping the user achieve a more aesthetically pleasing result, while enabeling multi viewing of results with different attention.  
+ 
+ \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=\linewidth]{promptcharm.png}
+ 	\caption{the promptcharm user interface where you can see the field with the initial prompt the suggested modfied version and 2 outputs with varied attention taken from \cite{promptCharm}}
+ 	\label{fig:promptCharm}
+ \end{figure}
+ 
+ 
+ Similarly promptMagician \cite{PromptMagician} also uses a prompt improvement then visualization human-in-the-loop approach. They achieve their prompt improvement through a pipeline, which 
+ given the initial prompt it automatically generates a collection of image with a range of hyper-parameter, then it searches for similar prompt-image pairs in DiffusionDB \cite{diffusiondb} a prompt-image database. Then they present a summarized visual overview which allows the user to select desired images. After they employ a prompt key word recommendation model on the selection, it clusters similar prompt-images and selects important words from prompts disregarding sentence structure. Then the words are visually matched to their image clusters allowing the user to explore options for prompt adjustment.
+ 
+   
+  \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[width=\linewidth]{promptMagicianInterface.png}
+ 	\caption{the prompMagician user interface  taken from \cite{PromptMagician}}
+ 	\label{fig:promptMagician}
+ \end{figure}
+ 
+ 
+ 
+ 
+ 
+ 
+  
 
 
 
@@ -322,7 +375,7 @@ where a model has been trained under a certain data set (the training data), but
 \chapter{Approach}
 This work aims to highlight the relationship between prompt and generated image in order for the user to better understand how changes in the prompt affect the generated images. \\
 A major challenge is visualizing the connection between the prompt and the image especially for many the prompt image pairs that are normally created during the creative process when utilizing an image generation model.\\
-For this an interactive approach is chosen  between a visualization of the images and the prompts.\\ Research led to chose a 2D scatterplot for images where circles with the indivudial image inside are vectorized and  displayed based on their similarity determined by U-map. To display the prompts and allow their easy readability and association with its corresponding prompt a sideways dag-tree was chosen where nodes are computed via the following steps 1. clean up the prompt, removing all special characters numbers and remove articles, pronouns, Auxiliary verbs and some prepositions (of, to, and, or, for) aswell as (with, without, from, by, as) while keeping others (in, at, on) that are deemed to be semantically significant for the image generation. 2. The inital nodes are formed consisting of the word and the position at which it occurs we only look at unique word positions words that appeared already are disregarded though their relationships (parent-child) are recorded, additionally we save whether the word has a child or whether any prompt ends with the word position pair. 3. We merge nodes that only have 1 child and which no prompt ends with. 4. collapse adjacent nodes with same entries 5. Last a couple sweeps with the barycenter heuristic to reduce edge crossings.\\
+For this an interactive approach is chosen  between a visualization of the images and the prompts.\\ Research led to chose a 2D scatter plot for images where circles with the individual image inside are vectorized and  displayed based on their similarity determined by U-map. To display the prompts and allow their easy readability and association with its corresponding prompt a sideways dag-tree was chosen where nodes are computed via the following steps 1. clean up the prompt, removing all special characters numbers and remove articles, pronouns, Auxiliary verbs and some prepositions (of, to, and, or, for) aswell as (with, without, from, by, as) while keeping others (in, at, on) that are deemed to be semantically significant for the image generation. 2. The initial nodes are formed consisting of the word and the position at which it occurs we only look at unique word positions words that appeared already are disregarded though their relationships (parent-child) are recorded, additionally we save whether the word has a child or whether any prompt ends with the word position pair. 3. We merge nodes that only have 1 child and which no prompt ends with. 4. collapse adjacent nodes with same entries 5. Last a couple sweeps with the barycenter heuristic to reduce edge crossings giving the graph a clearer look.\\
 
 
 
@@ -364,7 +417,7 @@ However we have lost the crucial information of what nodes belong together with 
 \end{figure}
 
 \section{scatterplot}
-To represent the images a scatterplot was chosen, this was due to 2D representation providing the best overview and being easily understood, while it also helps that humans associate visual closeness with belonging together or to a grouping making the distance between the points being given by similarity being very effective with similar images having a close proximity for an easy overview. Initially the scatter plot only contained dots representing the respective images with a hover functionality displaying the image and prompt. This however didn't give an initial overview over the entire graph which is why instead of just dots the images themselves as small circles were plotted providing the user with a good inital overview over the data. Furthermore zooming and panning is implemented to ease use of the scatterplot and allow the user more control of what he sees and focuses on.
+To represent the images a scatterplot was chosen, this was due to 2D representation providing the best overview and being easily understood, while it also helps that humans associate visual closeness with belonging together or to a grouping making the distance between the points being given by similarity being very effective with similar images having a close proximity for an easy overview. Initially the scatter plot only contained dots representing the respective images with a hover functionality displaying the image and prompt. This however didn't give an initial overview over the entire graph which is why instead of just dots the images themselves as small circles were plotted providing the user with a good initial overview over the data. Furthermore zooming and panning is implemented to ease use of the scatterplot and allow the user more control of what he sees and focuses on.
 \\Additionally a lens for image selection is introduced the lens can be varied in size allowing for larger or more precise selections, the selection is then highlighted and displayed in a grid next to a cursor. Ideally the images would be ordered based on similarity using for example SSIM as was the case in this work however for live interaction (the user sliding the lens over the scatterplot) SSIM or similar methods are with the current limitations of science and technology to slow, therefore the grid update sorted with a pixel based similarity measure only works in the live application for pre-computed values, which is in contrast to the goal of being able to change the prompt and generate images on the fly then adding the results to the framework immediately.
 
 \begin{figure}[H]
@@ -405,6 +458,7 @@ To represent the images a scatterplot was chosen, this was due to 2D representat
 \end{figure}
 
 
+\section{prompting help}
 
 
 
@@ -421,11 +475,12 @@ D3.js (Data-Driven Documents) is a JavaScript library for creating interactive a
 The key strength of D3 is its declarative data binding: datasets can directly drive the creation, transformation, and styling of visual elements. This makes it possible to build anything from simple bar charts to complex, interactive dashboards or exploratory visual analytics systems. Because of this versatility, D3 has become one of the mostcommonly used tools for web-based data visualization in both research and industry.
 
 \section{general framework}
-For the general framework a web-application was chosen utilizing htmt, JS and css for the frontend and python for the backend.
+For the general framework a web-application was chosen utilizing html, JS and css for the frontend and python for the backend.
 This allows for fast light weight prototyping and easy adpatability. 
-
-\chapter{Conclusion and Outlook}
+\chapter{use case example}
+\chapter{Conclusion}
 \label{chap:zusfas}
+Our approach can achieve 
 
 \section*{Outlook}
 
