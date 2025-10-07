@@ -459,13 +459,20 @@ To represent the images a scatterplot was chosen, this was due to 2D representat
 
 
 \section{prompting help}
-
+To assist the user in finding prompts quickly, the interface has a simple prompting tool, where the user can enter a prompt select which parts he'd like to vary aswell as how many variations and how long they should be, then he can select whether he'd like to append or prepend something to the prompt as well whether he'd like to \enquote{mix} all the options (vary every variation option which each other instantly giving a large prompt image space). Then after the user selection and confirmation we build a prompt see \autoref{sec:prompts} with the given inputs where we  LLM called is GPT-5 the newest and most powerful model in the GPT series. In the prompt building we employed prompt engineering techniques namely in-context learning to improve the LLMs accuracy and performance and Structured output prompting in order to be able to be able to send the response to the image generation model directly without further code to handle potential hallucination or formatting issues in post processing \cite{LLMoutputconstraints}, eliminating one avenue of errors or inaccuracy that might be introduced through that. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{promptInput2.png}
+	\caption{prompt suggestion interface, with A: input area where one can rightclick to toggle the words to vary B: prompt suggestion customization options where one can select how many alternatives and how long they should be, C:history of last used prompts}
+	\label{fig:promptInput}
+\end{figure}
 
 
 
 
 
 \section{graph interaction}
+
 
 \chapter{implementation}
 To realize the chosen design a web application utilizing d3 was implemented
@@ -490,7 +497,188 @@ All links were last followed on March 17, 2018.
 
 \appendix
 %\input{latexhints-english}
-
+\section{prompts}
+\label{sec:prompts}
+This section shows how the code for the prompt creation in python based on user input.
+Prompt for normal varying:
+\begin{verbatim}
+	if prepend and append:
+	extra_instruction = (
+	f"Prepend and append {lengthPrependAppend} words to each prompt. "
+	f"These can range from setting to style to image clarity and consistency improvements. "
+	f"Return your answer as JSON where each prompt is a new entry."
+	)
+	elif prepend:
+	extra_instruction = (
+	f"Prepend {lengthPrependAppend} words to each prompt. "
+	f"These can range from setting to style to image clarity and consistency improvements. "
+	f"Return your answer as JSON where each prompt is a new entry."
+	)
+	elif append:
+	extra_instruction = (
+	f"Append {lengthPrependAppend} words to each prompt. "
+	f"These can range from setting to style to image clarity and consistency improvements. "
+	f"Return your answer as JSON where each prompt is a new entry."
+	)
+	
+	
+	
+	examples = """
+	Example 1:
+	Input prompt: "a cat sitting on a windowsill"
+	Words to vary: "cat, sitting"
+	Number of alternatives: 2
+	Prepend 3 words
+	
+	Output:
+	{
+		"prompts": [
+		"a cat sitting on a windowsill",
+		"Golden hour lighting a tabby resting on a windowsill",
+		"Photorealistic digital art a kitten perched on a windowsill"
+		]
+	}
+	
+	Example 2:
+	Input prompt: "futuristic cityscape"
+	Words to vary: "futuristic"
+	Number of alternatives: 2
+	Append 4 words
+	
+	Output:
+	{
+		"prompts": [
+		"futuristic cityscape",
+		"cyberpunk cityscape, neon lights, rain-soaked streets",
+		"sci-fi cityscape, highly detailed, octane render"
+		]
+	}
+	
+	Example 3:
+	Input prompt: "mountain landscape at sunset"
+	Words to vary: "mountain, sunset"
+	Number of alternatives: 2
+	Prepend 2 and append 2 words
+	
+	Output:
+	{
+		"prompts": [
+		"mountain landscape at sunset",
+		"Oil painting alpine peaks at dusk, warm colors",
+		"Dramatic composition rocky cliffs at twilight, cinematic lighting"
+		]
+	}
+	"""
+	
+	user_prompt = (
+	f"{examples}\n\n"
+	f"Now apply the same approach:\n"
+	f"Input prompt: {prompt}\n"
+	f"Words to vary: {wordsToChange}\n"
+	f"Number of alternatives: {numAlternatives}\n"
+	f"Alternative length: {alternativeLengthWhenWordSelected}\n"
+	f"{extra_instruction}\n\n"
+	f"Generate the original prompt plus {numAlternatives} varied alternatives following the pattern shown above and return the output in a Json format where each promt is a new entry."
+	)
+\end{verbatim}
+Prompt for mixing all variations: 
+\begin{verbatim}
+	Inhalextra_instruction = ""
+	if prepend and append:
+	extra_instruction = (
+	f"Prepend and append {lengthPrependAppend} words to each prompt. Treat these the same as 'words to vary'"
+	f"These can range from setting to style to image clarity and consistency improvements.  "
+	f"Return your answer as JSON where each prompt is a new entry."
+	)
+	elif prepend:
+	extra_instruction = (
+	f"Prepend {lengthPrependAppend} words to each prompt. Treat these the same as 'words to vary' "
+	f"These can range from setting to style to image clarity and consistency improvements. "
+	f"Return your answer as JSON where each prompt is a new entry."
+	)
+	elif append:
+	extra_instruction = (
+	f"Append {lengthPrependAppend} words to each prompt. Treat these the same as 'words to vary' "
+	f"These can range from setting to style to image clarity and consistency improvements. "
+	f"Return your answer as JSON where each prompt is a new entry."
+	)
+	
+	examples = """
+	Example 1:
+	Input prompt: "a grey cat sitting on the floor"
+	Words to vary: ["grey", "cat"]
+	Alternatives per word: 3
+	
+	Step 1 - Generate alternatives:
+	- "grey" → ["orange", "black", "brown"]
+	- "cat" → ["kitten", "dog", "persian"]
+	
+	Step 2 - Generate all combinations:
+	{
+		"word_variations": {
+			"grey": ["orange", "black", "brown"],
+			"cat": ["kitten", "dog", "persian"]
+		},
+		"combined_prompts": [
+		"a orange kitten sitting on the floor",
+		"a orange dog sitting on the floor",
+		"a orange persian sitting on the floor",
+		"a black kitten sitting on the floor",
+		"a black dog sitting on the floor",
+		"a black persian sitting on the floor",
+		"a brown kitten sitting on the floor",
+		"a brown dog sitting on the floor",
+		"a brown persian sitting on the floor"
+		]
+	}
+	
+	Example 2:
+	Input prompt: "sunset over mountains"
+	Words to vary: ["sunset", "mountains"]
+	Alternatives per word: 2
+	
+	Step 1 - Generate alternatives:
+	- "sunset" → ["dawn", "twilight"]
+	- "mountains" → ["hills", "peaks"]
+	
+	Step 2 - Generate all combinations:
+	{
+		"word_variations": {
+			"sunset": ["dawn", "twilight"],
+			"mountains": ["hills", "peaks"]
+		},
+		"combined_prompts": [
+		"dawn over hills",
+		"dawn over peaks",
+		"twilight over hills",
+		"twilight over peaks"
+		]
+	}
+	
+	Example 3:
+	Input prompt: "a red sports car on the highway"
+	Words to vary: ["red", "sports car"]
+	Alternatives per word: 2
+	
+	Step 1 - Generate alternatives:
+	- "red" → ["blue", "silver"]
+	- "sports car" → ["sedan", "SUV"]
+	
+	Step 2 - Generate all combinations:
+	{
+		"word_variations": {
+			"red": ["blue", "silver"],
+			"sports car": ["sedan", "SUV"]
+		},
+		"combined_prompts": [
+		"a blue sedan on the highway",
+		"a blue SUV on the highway",
+		"a silver sedan on the highway",
+		"a silver SUV on the highway"
+		]
+	}
+	"""t...
+\end{verbatim}
 \pagestyle{empty}
 \renewcommand*{\chapterpagestyle}{empty}
 \Versicherung
