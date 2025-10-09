@@ -215,7 +215,7 @@ This thesis starts with \cref{chap:k2}.
 We can also typeset \verb|<text>verbatim text</text>|.
 Backticks are also rendered correctly: \verb|`words in backticks`|.
 
-With the growing capabilities of AI-models in recent years, its usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030.
+With the growing capabilities of artificial-intelligence(AI)-models in recent years, its usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030.
 
 
 
@@ -260,7 +260,8 @@ Comparing images is an old and non-trivial problem that is also afflicted by sub
 One way is to transform an image into something with many pre-existing comparison methods such as a vector where mathematical similarity measurements are well established. There are several ways to turn an image into a vector such as the "classical" approach where feature extraction is hand-engineered such as SIFT \cite{inbook}, however due to greater generalizability, automatic feature extraction and usually better performance methods using specifically trained machine learning models are generally preferred. Which was also the case in this thesis, where the Img2Vec library \cite{patel2019img2vec} was utilized.
 
 \section{vector dimensonality reduction}
-In dimensionality reduction we try to reduce the dimension of a given data points while trying to preserve certain properties and relationships between the data points, in our case we are interested in the similarity of the given data points. I utilized Umap which builds a nearest neighbour graph utilizing fuzzy sets in the higher dimensional space and then tries to preserve this realtionship in lower dimensional spaces usally 2D or 3D. 
+\label{dimRed}
+In dimensionality reduction we try to reduce the dimension of a given data points while trying to preserve certain properties and relationships between the data points, in our case we are interested in the similarity of the given data points. I utilized Umap \cite{umap} which builds a nearest neighbour graph utilizing fuzzy sets in the higher dimensional space and then tries to preserve this realtionship in lower dimensional spaces usally 2D or 3D. 
 As data pojnts we utilize the vectors we get from the previous section where we try to preserver their similarity while projecting them onto 2d space thus we are able to plot them on a simple 2d graph which is visually one of the most intuitive for humans to grasp. 
 
 \section{pixel based comparison}
@@ -341,7 +342,11 @@ Similarly for image generation models, Brade et al. (2023) \cite{brade2023prompt
 
 add figures for promptaid and promptthis?
 Describe relevant scientific literature related to your work.
-\section{Visualization in Generative Models}
+\section{Visualization of image data}
+With the recent rise of generative AI came a newfound need of large annotated image collections as well as the novel opportunity of creating large amounts of new never seen before images at the click of a button.\\This resulted in increased interest and need for image data visualization and classification two concepts that often go hand-in-hand as visualizing image collections effectively usually involves classifying or differentiating images in some way to achieve a useful visualization this can range from clustering them by similarity to ordering them based on content (such as perceived emotion). Researches have proposed several techniques to tackle this challenge.Such as 
+ Such as scatter plots, a graph with elements strewn in usually a 2D or 3D  space based on some sorting criteria, most scatter plots are similar and normally only differ in the choice of elements (just dots or other symbols, do they have other stuff attached etc.) that are displayed the axis and the ability to zoom or maneuver in the graph. Whether a scatter plot is effective in visualizing data however is not only given by it's appearance, features and design but also largely depends on the underlying computation method which dictates how the data is spatially arranged. One of the most employed method for image data for this right now is dimensionality reduction \cref{dimRed} \cite{CDR,umap}
+
+
 
 
 
@@ -368,8 +373,8 @@ better preservation of global structure. Making it the prefered choice for large
 
 
 \section{visualization of text content}
-Visualizing text content is a complex problem with a multitude of approaches depending on several factors like content size, content type and desired result/visualization.\\
-Analyzing the most important topics of a document collection with a temporal aspect (showing which topics used to be relevant and which topics are relevant now in a (over time)changing document collection such as presidential speeches) here one might utilize word clouds where word size and ordering play an important role see \cref{fig:wordClouds}  \cite{wordclouds}  different approach than visualizing a large corpus of scientific papers via an interactive interface with several components including a semantic link graph and a content summary section see \cref{fig:scientificPaperVisualization}\cite{visualizingPaperCollections}. Yet another approach for text documents and sentences is a word tree \cref{fig:wordTree} where words and unique sentence parts are displayed in a tree giving an overview of where and in what context certain words occur these however can get rather large for longer texts or documents \cite{wordTree}. Again others aim to visualize the core content of a social media text collection introducing other challenges and possibilities due to the data being mostly short and unstructured. This allows for a \enquote{variation} of a word tree that utilizes a more lose but still relevant ordering while filtering out more words deemed not relevant enough and displaying more important (usually more often occurring) words larger \cref{fig:sentenTree} \cite{sentenTree}.\\ 
+Visualizing text content is a complex problem with a multitude of approaches depending on several factors like content size, type and desired result/visualization.\\
+Analyzing the most important topics of a document collection with a temporal aspect (showing which topics used to be relevant and which topics are relevant now, in a (over time)changing document collection such as presidential speeches) here one might utilize word clouds where word size and ordering play an important role see \cref{fig:wordClouds}  \cite{wordclouds}  different approach than visualizing a large corpus of scientific papers via an interactive interface with several components including a semantic link graph and a content summary section see \cref{fig:scientificPaperVisualization}\cite{visualizingPaperCollections}. Yet another approach for text documents and sentences is a word tree \cref{fig:wordTree} where words and unique sentence parts are displayed in a tree giving an overview of where and in what context certain words occur these however can get rather large for longer texts or documents \cite{wordTree}. Again others aim to visualize the core content of a social media text collection introducing other challenges and possibilities due to the data being mostly short and unstructured. This allows for a \enquote{variation} of a word tree that utilizes a more lose but still relevant ordering while filtering out more words deemed not relevant enough and displaying more important (usually more often occurring) words larger \cref{fig:sentenTree} \cite{sentenTree}.\\ 
 Inspired by the last two approaches we present a variation of a word tree for prompts in form of a dag with the goal of preserving sentence structure for easy similarity assessment while aggregating words and sentence sections as much as possible for a more manageable visual analysis.
 
 
