@@ -343,10 +343,16 @@ Similarly for image generation models, Brade et al. (2023) \cite{brade2023prompt
 add figures for promptaid and promptthis?
 Describe relevant scientific literature related to your work.
 \section{Visualization of image data}
-With the recent rise of generative AI came a newfound need of large annotated image collections as well as the novel opportunity of creating large amounts of new never seen before images at the click of a button.\\This resulted in increased interest and need for image data visualization and classification two concepts that often go hand-in-hand as visualizing image collections effectively usually involves classifying or differentiating images in some way to achieve a useful visualization this can range from clustering them by similarity to ordering them based on content (such as perceived emotion). Researches have proposed several techniques to tackle this challenge.Such as 
- Such as scatter plots, a graph with elements strewn in usually a 2D or 3D  space based on some sorting criteria, most scatter plots are similar and normally only differ in the choice of elements (just dots or other symbols, do they have other stuff attached etc.) that are displayed the axis and the ability to zoom or maneuver in the graph. Whether a scatter plot is effective in visualizing data however is not only given by it's appearance, features and design but also largely depends on the underlying computation method which dictates how the data is spatially arranged. One of the most employed method for image data for this right now is dimensionality reduction \cref{dimRed} \cite{CDR,umap}
+With the recent rise of generative AI came a newfound need of large annotated image collections as well as the novel opportunity of creating large amounts of new never seen before images at the click of a button.\\This resulted in increased interest and need for image data visualization and classification two concepts that often go hand-in-hand as visualizing image collections effectively usually involves classifying or differentiating images in some way to achieve a useful visualization this can range from clustering them by similarity to ordering them based on content (such as perceived emotion). Researches have proposed several techniques to tackle this challenge. Such as treemaps where data is sorted categorically in rectangles, with one rectangle usually containing data of 1 specific category, the graph also allows for rectangles of 2 rectangles allowing to display a parent group, such as cars and trains with their own rectangle (classification) and a larger one containing both categorized as transportation. In some treemaps the size of the individual data points(entries in the rectangles) can vary for image data this is however usually not the case as 1 image generally isn't more important or has a larger value than another. An example of one such adaptation using semantic zooming can be found here \cite{dendromap} \cref{fig:dendroMap}.
+ Another method involves displaying the data in scatter plots, a graph with elements strewn in usually a 2D or 3D  space based on some sorting criteria, most scatter plots are similar and normally only differ in the choice of elements (just dots or other symbols, do they have other stuff attached etc.) that are displayed the axis and the ability to zoom or maneuver in the graph. Whether a scatter plot is effective in visualizing data however is not only given by it's appearance, features and design but also largely depends on the underlying computation method which dictates how the data is spatially arranged. One of the most employed method for image data for this right now is dimensionality reduction \cref{dimRed} \cite{CDR,umap}.\\
+ In this work we use a modified scatter plot with umap to compute the groupings, this is due to a scatter plot better representing image relations, a grid can't show how dissimilar 2 images are due to the distances being fixed while a scatter plot allows for basically arbitrary distances, as well as wanting to enable the user to get an overview over the entire image space at once, here a scatter plot fits very well for large data amounts, while he is still able to zoom and move within the scatter plot for more precise viewing. 
 
-
+  \begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{dendroMap.png}
+	\caption{example of a word cloud about the US-presidential election 2008  taken from \cite{wordclouds}}
+	\label{fig:dendroMap}
+\end{figure}
 
 
 
@@ -511,11 +517,25 @@ To assist the user in finding prompts quickly, the interface has a simple prompt
 
 \section{graph interaction}
 
+
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{graphInteraction1.png}
-	\caption{graph showcasing the interaction between dag and scatterplot}
+	\caption{graph showcasing the interaction between dag and scatter plot}
 	\label{fig:graphInteraction}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{dagScatterSelection.png}
+	\caption{figure showing selection in dag with matching data in scatter plot}
+	\label{fig:dagScatterSelection}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterDagSelection.png}
+	\caption{figure showing selection in scatter plot with matching data in dag}
+	\label{fig:scatterDagSelection}
 \end{figure}
 
 \chapter{implementation}
@@ -529,11 +549,12 @@ The key strength of D3 is its declarative data binding: datasets can directly dr
 For the general framework a web-application was chosen utilizing html, JS and css for the frontend and python for the backend.
 This allows for fast light weight prototyping and easy adpatability. 
 \chapter{use case example}
+
 \chapter{Conclusion}
 \label{chap:zusfas}
 Our approach can achieve 
 
-\section*{Outlook}
+\section{Outlook}
 
 \printbibliography
 
