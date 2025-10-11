@@ -215,18 +215,19 @@ This thesis starts with \cref{chap:k2}.
 We can also typeset \verb|<text>verbatim text</text>|.
 Backticks are also rendered correctly: \verb|`words in backticks`|.
 
-With the growing capabilities of AI-models in recent years, its usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030.
+With the growing capabilities of artificial-intelligence(AI)-models in recent years, its usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030.
 
-Perhaps the most popular models LLMs capable of impressive language understanding and reasoning tasks, besides them there are generative models which have found a wide variety of use cases for music, video, and mainly image generation. 
 
-Perhaps the most popular AI models today are LLMs, which demonstrate impressive language understanding and reasoning capabilities. Alongside them, generative models have emerged, finding use cases in music, video, and mainly image generation. These models can create entire complex, high-quality scenes within seconds, thanks to major advances in recent years. Leading examples such as MidJourney \cite{midjourney}, Stable Diffusion \cite{stable-diffusion}, and GPT-4o \cite{GPT-4o} are able to produce photo-realistic images as well as artworks in many different styles and forms. They allow people to explore their creativity with few technical limitations, shifting the main challenge toward effective goal driven usage of them. 
+
+Perhaps the most popular AI models today are LLMs, which demonstrate impressive language understanding and reasoning capabilities. Alongside them, generative models have emerged, finding use cases in music, video,voice and mainly image generation. These models can create entire complex, high-quality scenes within seconds, thanks to major advances in recent years. Leading examples such as MidJourney \cite{midjourney}, Stable Diffusion \cite{stable-diffusion}, and GPT-4o \cite{GPT-4o} are able to produce photo-realistic images as well as artworks in many different styles and forms. They allow people to explore their creativity with few technical limitations, shifting the main challenge toward effective goal driven usage of them. 
 
 The most common approach when using image generation models is providing a textual prompt from which the model then generates an image. Other forms of prompts include pictures or sounds, but text remains the most widely used. The problem with the textual  approach is its ambiguity, the user does not know how exactly the model will process the prompt or what the main drivers for changes in image output are. More concisely to the average user, the model behaves like a black box, which makes structured testing to analyze the models behavior given changing inputs difficult, leading to many trial and error attempts of which are often to numerous to properly remember or categorize in a traditional setting. Consequently getting the desired result can be challenging and sometimes feel arbitrary.\\
 Many attempts have been made to aid the user facing these problems such as extending and improving multi-modal inputs, for example the user being able to provide a text-prompt and a rough sketch to an image generation model allowing for more control  \cite{lin2025sketchflexfacilitatingspatialsemanticcoherence}. \\Another promising direction is helping user adjust prompt automatically \cite{10.1145/3729176.3729203,You2024Aesthetic},
 as well as hybrid human in the loop approaches that offer both improving/adjusting prompt and visualizing the results together with the input (prompt) \cite{PromptMagician,mishra2025promptaidpromptexplorationperturbation,brade2023promptifytexttoimagegenerationinteractive,guo2024prompthisvisualizingprocessinfluence,promptCharm}
 %add promptthis pomptify promptaid references add promptcharm/promptmagician to related work 
-While these works focus on few prompt image pairs and more fine grain adjustments to understand and improve the prompt image relationship, in this work we try to implement a scale adjustable automated but customizable prompt variation and visualization tool.\\
-We aimed to achieve this through a frame work which has a basic text field that allows the user to customize how the an LLM will adjust and vary the prompt before generating. As well as 2 interactive graphs one being a scatterplot displaying the images based on similarity and the other being a text dag to visualize the prompts, both graphs have functionality that maps data from one to the other allowing the user to understand how the relationship between in and output
+While these works focus on smaller scale prompt image pairs and more fine grain adjustments in order to understand and improve the prompt image relationship, in this work we try to implement a scale adjustable automated but customizable prompt variation and visualization tool with the focus on  facilitating the generation of large image spaces and visualizing the relationship of big prompt-image datasets.\\
+We aimed to achieve this through a frame work which has a basic text field that allows the user to customize how the an LLM will adjust and vary the prompt before generating. As well as 2 interactive graphs, a scatterplot displaying the images based on similarity and a directed acyclic graph (dag) with words as nodes to visualize the prompts. Both graphs have functionality that maps data from one to the other allowing the user to understand the relationship between model in and output.
+
 The goal of this thesis is therefore to conceptualize and develop a visual-interactive approach that helps to understand how changes in a prompt impact the generated image.For this we will introduce an interactive framework between 2 graphs as well as a prompting aid for the user.\\
 
 \chapter{Background}
@@ -259,7 +260,8 @@ Comparing images is an old and non-trivial problem that is also afflicted by sub
 One way is to transform an image into something with many pre-existing comparison methods such as a vector where mathematical similarity measurements are well established. There are several ways to turn an image into a vector such as the "classical" approach where feature extraction is hand-engineered such as SIFT \cite{inbook}, however due to greater generalizability, automatic feature extraction and usually better performance methods using specifically trained machine learning models are generally preferred. Which was also the case in this thesis, where the Img2Vec library \cite{patel2019img2vec} was utilized.
 
 \section{vector dimensonality reduction}
-In dimensionality reduction we try to reduce the dimension of a given data points while trying to preserve certain properties and relationships between the data points, in our case we are interested in the similarity of the given data points. I utilized Umap which builds a nearest neighbour graph utilizing fuzzy sets in the higher dimensional space and then tries to preserve this realtionship in lower dimensional spaces usally 2D or 3D. 
+\label{dimRed}
+In dimensionality reduction we try to reduce the dimension of a given data points while trying to preserve certain properties and relationships between the data points, in our case we are interested in the similarity of the given data points. I utilized Umap \cite{umap} which builds a nearest neighbour graph utilizing fuzzy sets in the higher dimensional space and then tries to preserve this realtionship in lower dimensional spaces usally 2D or 3D. 
 As data pojnts we utilize the vectors we get from the previous section where we try to preserver their similarity while projecting them onto 2d space thus we are able to plot them on a simple 2d graph which is visually one of the most intuitive for humans to grasp. 
 
 \section{pixel based comparison}
@@ -340,7 +342,21 @@ Similarly for image generation models, Brade et al. (2023) \cite{brade2023prompt
 
 add figures for promptaid and promptthis?
 Describe relevant scientific literature related to your work.
-\section{Visualization in Generative Models}
+\section{Visualization of image data}
+With the recent rise of generative AI came a newfound need of large annotated image collections as well as the novel opportunity of creating large amounts of new never seen before images at the click of a button.\\This resulted in increased interest and need for image data visualization and classification two concepts that often go hand-in-hand as visualizing image collections effectively usually involves classifying or differentiating images in some way to achieve a useful visualization this can range from clustering them by similarity to ordering them based on content (such as perceived emotion). Researches have proposed several techniques to tackle this challenge. Such as treemaps where data is sorted categorically in rectangles, with one rectangle usually containing data of 1 specific category, the graph also allows for rectangles of 2 rectangles allowing to display a parent group, such as cars and trains with their own rectangle (classification) and a larger one containing both categorized as transportation. In some treemaps the size of the individual data points(entries in the rectangles) can vary for image data this is however usually not the case as 1 image generally isn't more important or has a larger value than another. An example of one such adaptation using semantic zooming can be found here \cite{dendromap} \cref{fig:dendroMap}.
+ Another method involves displaying the data in scatter plots, a graph with elements strewn in usually a 2D or 3D  space based on some sorting criteria, most scatter plots are similar and normally only differ in the choice of elements (just dots or other symbols, do they have other stuff attached etc.) that are displayed the axis and the ability to zoom or maneuver in the graph. Whether a scatter plot is effective in visualizing data however is not only given by it's appearance, features and design but also largely depends on the underlying computation method which dictates how the data is spatially arranged. One of the most employed method for image data for this right now is dimensionality reduction \cref{dimRed} \cite{CDR,umap}.\\
+ In this work we use a modified scatter plot with umap to compute the groupings, this is due to a scatter plot better representing image relations, a grid can't show how dissimilar 2 images are due to the distances being fixed while a scatter plot allows for basically arbitrary distances, as well as wanting to enable the user to get an overview over the entire image space at once, here a scatter plot fits very well for large data amounts, while he is still able to zoom and move within the scatter plot for more precise viewing. 
+
+  \begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{dendroMap.png}
+	\caption{example of a word cloud about the US-presidential election 2008  taken from \cite{wordclouds}}
+	\label{fig:dendroMap}
+\end{figure}
+
+
+
+
 \section{Visualization of large data sets and high dimensional data}
 In order to visualize large data sets graphs usually are the go to approach however some things are harder to plot than others, while it might be easy to plot a quarterly profits report plotting high dimensional data like text, videos or images is a different challenge especially when wanting to plot them relative to each other. In our case plotting images based on their similarity, this is challenging due to a lot of traditional measures to determine the similarity of images returning a single number (depending on the implementation usually the closer that number to 0 the similar the images), additionally the similarity is usually measured between 2 images then for larger data sets with possibly hundreds of images we'd have to chose 1 starting image from the data set and compare it all the others to gain our similarity score. This has some potential issues 1. it might not give an accurate representation of the images towards each other when plotted (2 very different images could end up with a very similar difference score to the chosen starting image) making such a measure potentially ineffective for visualizing data. 2. This makes plotting the data in a meaningful way hard as viewing the data on a 1D number line doesn't utilize the full screen space and observes have a harder time to view and relate all the data (as they have to pan from left to right having a larger distance between data points). Also plotting the data in a raster where we go from left to right in descending similarity wouldn't properly quantifying how similar images are  (2 images that are very similar to each other could be next to an image very dissimilar from these first 2), losing that entire dimension of the data in the visualization. \\
 Thus research has been done to be able to preserve the similarity relationship while utilizing 2 or 3 dimensions with the first major breakthrough in that direction being t-SNE \cite{van2008visualizing}.
@@ -362,9 +378,37 @@ alternative that retains the benefits of t-SNE while offering improved speed and
 better preservation of global structure. Making it the prefered choice for larger data sets.
 
 
-\section{visualization of sentences}
+\section{visualization of text content}
+Visualizing text content is a complex problem with a multitude of approaches depending on several factors like content size, type and desired result/visualization.\\
+Analyzing the most important topics of a document collection with a temporal aspect (showing which topics used to be relevant and which topics are relevant now, in a (over time)changing document collection such as presidential speeches) here one might utilize word clouds where word size and ordering play an important role see \cref{fig:wordClouds}  \cite{wordclouds}  different approach than visualizing a large corpus of scientific papers via an interactive interface with several components including a semantic link graph and a content summary section see \cref{fig:scientificPaperVisualization}\cite{visualizingPaperCollections}. Yet another approach for text documents and sentences is a word tree \cref{fig:wordTree} where words and unique sentence parts are displayed in a tree giving an overview of where and in what context certain words occur these however can get rather large for longer texts or documents \cite{wordTree}. Again others aim to visualize the core content of a social media text collection introducing other challenges and possibilities due to the data being mostly short and unstructured. This allows for a \enquote{variation} of a word tree that utilizes a more lose but still relevant ordering while filtering out more words deemed not relevant enough and displaying more important (usually more often occurring) words larger \cref{fig:sentenTree} \cite{sentenTree}.\\ 
+Inspired by the last two approaches we present a variation of a word tree for prompts in form of a dag with the goal of preserving sentence structure for easy similarity assessment while aggregating words and sentence sections as much as possible for a more manageable visual analysis.
 
 
+  \begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{wordCloud.png}
+	\caption{example of a word cloud about the US-presidential election 2008  taken from \cite{wordclouds}}
+	\label{fig:wordClouds}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{actionScienceExplorer.png}
+	\caption{Interface of action scinece explorer showing the reference management 1-4, a citation statistic 5, the main visualization 6, a section for the citation context (7,9) and a summary section for multiple documents 8   taken from   \cite{visualizingPaperCollections}}
+	\label{fig:scientificPaperVisualization}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{wordTree.png}
+	\caption{Word tree showing occurrences and subsequent words of i have a dream in the famous speech of martin luther king taken from   \cite{wordTree}}
+	\label{fig:wordTree}
+	
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{sentenTree.png}
+	\caption{example of a sentenTree about social media posts containing yelp and eat24 taken from   \cite{sentenTree}}
+	\label{fig:sentenTree}
+\end{figure}
 \section{Concept Drift in Generative models}
 Traditionally, concept drift in machine learning refers to a change in the mapping between input data and output labels over time. A model is trained on a particular data distribution, but as the relationship between data features and model classification shifts, its predictions become less reliable. For example, a spam email detector trained on data from five years ago may struggle today because spammers use new patterns and tactics that the model never learned, causing it to missclassify more modern spam.\\
 In this thesis concept drift refers to the changing the intent of the user while prompting the image generation model. Where in a normal use case it is likely that the prompt will be adjusted altered modified and specified many times in order to achieve the desired end result. This work aims to visualize that process and easy narrowing in on a desired prompt by providing an overview between the image and the prompt space hopefully allowing the user to identify what parts of the image changes based on the changes in the prompt.
@@ -446,9 +490,9 @@ To represent the images a scatterplot was chosen, this was due to 2D representat
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{gridGeometric.png}
+	\includegraphics[width=\linewidth]{gridSSIM.png}
 	\caption{ScatterPlot with Lens selection displaying grid sorted with SSIM}
-	\label{fig:scatterNoSSIM}
+	\label{fig:scatterSSIM}
 \end{figure}
 \begin{figure}[H]
 	\centering
@@ -472,7 +516,30 @@ To assist the user in finding prompts quickly, the interface has a simple prompt
 
 
 \section{graph interaction}
+A major challenge when trying to visualize results of generative ai in a analytical way is mapping them to their input, this work aims to solve this problem by creating graphs for both and enabling graph interactions in order to map a selection in one graph to the corresponding data in the other, as well as adding a grid displaying selected images for easier viewing increasing the image size relative to the scatter plot elements additionally remedying the issue that with large similar image spaces the images start to significantly overlap thus making the grid necessary for viewing the hidden images.\\
+To map from the scatter plot to the dag we chose a lens selection for the images, images selected by the lens are 1.portrait in the grid as aforementioned as and are also mapped to their corresponding words in the dag, by highlighting them while graying out the non related words allowing for a quick visual assessment by the user \cref{fig:scatterDagSelection}.\\
+For the complementary selection from dag to scatter plot we chose a simple hover approach, when hovering over a node in the dag that node and all the corresponding elements in the scatter plot are highlighted red while non related elements in both graphs are grayed out \cref{fig:dagScatterSelection}. This again allows for an easy visual mapping of corresponding elements by the user due to color relationship and highlighting as well as graying out relevant and non relevant elements. 
 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{graphInteraction1.png}
+	\caption{graph showcasing the interaction between dag and scatter plot}
+	\label{fig:graphInteraction}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterDagSelection.png}
+	\caption{figure showing selection in scatter plot with matching data in dag}
+	\label{fig:scatterDagSelection}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{dagScatterSelection.png}
+	\caption{figure showing selection in dag with matching data in scatter plot}
+	\label{fig:dagScatterSelection}
+\end{figure}
 
 \chapter{implementation}
 To realize the chosen design a web application utilizing d3 was implemented
@@ -485,14 +552,21 @@ The key strength of D3 is its declarative data binding: datasets can directly dr
 For the general framework a web-application was chosen utilizing html, JS and css for the frontend and python for the backend.
 This allows for fast light weight prototyping and easy adpatability. 
 \chapter{use case example}
+\chapter{conclusion}
 \chapter{discussion}
-was hat funktioniert was nicht was besser machen/ändern
-\chapter{Conclusion}
 \label{chap:zusfas}
-Our approach can achieve 
+Our approach can achieve a comprehensive overview over prompt and image space together, so long as the data isn't too different from each other. Since then both dag and scatter plot would suffer in their effectiveness, the dag would be branching to far and growing too large due to aggregation being scarcely possible if the words are too different and the scatter plot would be scattered displaying a bunch of individual dissimilar points with insufficient clustering or similarity sorting.\\ If both image and text data are sufficiently similar the user can explore the text and image space relatively quickly even for large data sets allowing them to better understand the relationship between prompt and generated image as well as adding new prompt-image pairs and seeing how they compare in their respective graph, which helps the user in finding their desired output.
 
-\section*{Outlook}
 
+negatives: dag path not always identifying \enquote{unique} paths when path merges and splits again not all displayed possibilities have to be in the data, 
+for very large image collections zooming and panning becomes necessary taking more time to grasping image and prompt space, response time when creating large amounts of images very slow \\
+-d3 has problems when trying to zoom and pan with large amounts of data grid becomes essential to view overlapping images
+
+
+
+\section{Outlook}
+Include hyper parameters, and model attention (for attention potentially vary word size in dag based on attention given to each word, hard for multiple prompts with different attention distribution, could be solved for single prompt by showing dag and attention sizes on hover of single image), try to add them in visualization, make images have wider variety, try to find a way to make dag graph more identifiable without blowing size up like word tree. Improve ve response time (model and hardware issue), potentially allow for user to pick prompt alternatives. Perhaps move clusters closer together (if far apart) for better user overview. If data is too different perhaps an approach to categorize it and then aggregate categories could work.\\
+Divide an conquer approach allow free selection of images and display them in smaller scatter plot and dag if desired by user
 \printbibliography
 
 All links were last followed on March 17, 2018.
@@ -682,6 +756,13 @@ Prompt for mixing all variations:
 	}
 	"""t...
 \end{verbatim}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{graphInteractionLong.png}
+	\caption{graph showing detailed graph interactions}
+	\label{fig:GraphInteractionLong}
+\end{figure}
 \pagestyle{empty}
 \renewcommand*{\chapterpagestyle}{empty}
 \Versicherung
