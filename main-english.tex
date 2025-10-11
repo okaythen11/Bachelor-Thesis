@@ -490,9 +490,9 @@ To represent the images a scatterplot was chosen, this was due to 2D representat
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{gridGeometric.png}
+	\includegraphics[width=\linewidth]{gridSSIM.png}
 	\caption{ScatterPlot with Lens selection displaying grid sorted with SSIM}
-	\label{fig:scatterNoSSIM}
+	\label{fig:scatterSSIM}
 \end{figure}
 \begin{figure}[H]
 	\centering
@@ -516,7 +516,9 @@ To assist the user in finding prompts quickly, the interface has a simple prompt
 
 
 \section{graph interaction}
-
+A major challenge when trying to visualize results of generative ai in a analytical way is mapping them to their input, this work aims to solve this problem by creating graphs for both and enabling graph interactions in order to map a selection in one graph to the corresponding data in the other, as well as adding a grid displaying selected images for easier viewing increasing the image size relative to the scatter plot elements additionally remedying the issue that with large similar image spaces the images start to significantly overlap thus making the grid necessary for viewing the hidden images.\\
+To map from the scatter plot to the dag we chose a lens selection for the images, images selected by the lens are 1.portrait in the grid as aforementioned as and are also mapped to their corresponding words in the dag, by highlighting them while graying out the non related words allowing for a quick visual assessment by the user \cref{fig:scatterDagSelection}.\\
+For the complementary selection from dag to scatter plot we chose a simple hover approach, when hovering over a node in the dag that node and all the corresponding elements in the scatter plot are highlighted red while non related elements in both graphs are grayed out \cref{fig:dagScatterSelection}. This again allows for an easy visual mapping of corresponding elements by the user due to color relationship and highlighting as well as graying out relevant and non relevant elements. 
 
 
 \begin{figure}[H]
@@ -525,17 +527,18 @@ To assist the user in finding prompts quickly, the interface has a simple prompt
 	\caption{graph showcasing the interaction between dag and scatter plot}
 	\label{fig:graphInteraction}
 \end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{dagScatterSelection.png}
-	\caption{figure showing selection in dag with matching data in scatter plot}
-	\label{fig:dagScatterSelection}
-\end{figure}
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{scatterDagSelection.png}
 	\caption{figure showing selection in scatter plot with matching data in dag}
 	\label{fig:scatterDagSelection}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{dagScatterSelection.png}
+	\caption{figure showing selection in dag with matching data in scatter plot}
+	\label{fig:dagScatterSelection}
 \end{figure}
 
 \chapter{implementation}
@@ -549,13 +552,21 @@ The key strength of D3 is its declarative data binding: datasets can directly dr
 For the general framework a web-application was chosen utilizing html, JS and css for the frontend and python for the backend.
 This allows for fast light weight prototyping and easy adpatability. 
 \chapter{use case example}
-
-\chapter{Conclusion}
+\chapter{conclusion}
+\chapter{discussion}
 \label{chap:zusfas}
-Our approach can achieve 
+Our approach can achieve a comprehensive overview over prompt and image space together, so long as the data isn't too different from each other. Since then both dag and scatter plot would suffer in their effectiveness, the dag would be branching to far and growing too large due to aggregation being scarcely possible if the words are too different and the scatter plot would be scattered displaying a bunch of individual dissimilar points with insufficient clustering or similarity sorting.\\ If both image and text data are sufficiently similar the user can explore the text and image space relatively quickly even for large data sets allowing them to better understand the relationship between prompt and generated image as well as adding new prompt-image pairs and seeing how they compare in their respective graph, which helps the user in finding their desired output.
+
+
+negatives: dag path not always identifying \enquote{unique} paths when path merges and splits again not all displayed possibilities have to be in the data, 
+for very large image collections zooming and panning becomes necessary taking more time to grasping image and prompt space, response time when creating large amounts of images very slow \\
+-d3 has problems when trying to zoom and pan with large amounts of data grid becomes essential to view overlapping images
+
+
 
 \section{Outlook}
-
+Include hyper parameters, and model attention (for attention potentially vary word size in dag based on attention given to each word, hard for multiple prompts with different attention distribution, could be solved for single prompt by showing dag and attention sizes on hover of single image), try to add them in visualization, make images have wider variety, try to find a way to make dag graph more identifiable without blowing size up like word tree. Improve ve response time (model and hardware issue), potentially allow for user to pick prompt alternatives. Perhaps move clusters closer together (if far apart) for better user overview. If data is too different perhaps an approach to categorize it and then aggregate categories could work.\\
+Divide an conquer approach allow free selection of images and display them in smaller scatter plot and dag if desired by user
 \printbibliography
 
 All links were last followed on March 17, 2018.
