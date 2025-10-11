@@ -555,24 +555,25 @@ This allows for fast light weight prototyping and easy adpatability. For the gen
 This 
 \chapter{use case example}
 A user wants to create an image using generative AI for a presentation. However, they are frustrated, during their last generation session, they had to adjust their prompt dozens of times before achieving a satisfactory result. Seeking a more efficient approach, they turn to prompt vision to gain better insight into how prompt modifications affect generated outputs, hoping to reduce time and iterations in future image creation tasks.\\
-First the user selects a model \footnote{Model selection is not implemented in the prototype} and enters a prompt in the dedicated field. They really like animals and come up with a scenario for an elephant as well as a quality tag they remember from last time \enquote{A photo of an elephant munching on a stack of hay in a barn, extremely high quality}. They then select which words they want  alternatives for and how many words long the alternatives should be \cref{fig:usecasePrompt1}. Next they elect to let the LLM mix all alternatives with each other curious to explore the different variations. While waiting on the tool response they decide to take a coffee break. 
+First the user selects a model \footnote{Model selection is not implemented in the prototype} and enters a prompt in the dedicated field. They really like animals and come up with a scenario for an elephant as well as a quality tag they remember from last time \enquote{A photo of an elephant munching on a stack of hay in a barn, extremely high quality}. They select which words to vary and specify the desired length for alternatives \cref{fig:usecasePrompt1}. Next they choose to let the LLM mix all alternatives with each other curious to explore the different variations. While waiting on the tool response they decide to take a coffee break. 
 
 Upon returning, they are initially surprised by the number of images created, then begin interacting with the DAG visualization by hovering and selecting nodes, aiming to understand how changes in the prompt have affected the images \cref{fig:usecaseQualityDag}. 
 
-After selecting and observing different word combinations, as well as zooming and panning in the scatter plot to better identify images, they note that the differences when using image or photo in the prompt seem minimal, with only drawing looking less real. Next they discover that against their expectations the difference between using fantasy or realistic is quite small. Using cute however drastically changes the output of the model making the animals appear more cartoonish with child-like features. Then they observe that the model seems to generate simple poses like sitting well, but fails to show more complex poses, like spying, in the majority of images, and completely fails to display munching. They also notice that the backgrounds are always accurate and the model performs way better when tasked with displaying the apple and the hay stack than the fish. \\
-Then the user notes an anomaly in the displayed data: a series of black-and-white images. Thus they use the lens to investigate what part of the prompt could have caused that artifact \cref{fig:usecaseQualityScatter}. Looking at the highlighted words in the DAG they notice that there are multiple options for everything except for drawing, elephant, and barn making the last 3 the likely culprits. They then hover over each option, noticing that drawing has by far the largest portion of black-and-white images, identifying it as the cause.\\
+After selecting and observing different word combinations, as well as zooming and panning in the scatter plot to better identify images, they note that the differences when using image or photo in the prompt seem minimal, with only drawing looking less real. Next they discover that against their expectations the difference between using fantasy or realistic is quite small. Using cute however drastically changes the output most of the time, making the animals appear more cartoonish with child-like features. Then they observe that the model seems to generate simple poses like sitting well, but fails to show more complex poses, like spying, in the majority of images, and completely fails to display munching. They also notice that the backgrounds are always accurate and the model performs way better when tasked with displaying the apple and the hay stack than the fish. \\
+Then the user notes an anomaly in the displayed data: a series of black-and-white images. Thus they use the lens to investigate what part of the prompt could have caused that artifact \cref{fig:usecaseQualityScatter}. Looking at the highlighted words in the DAG they notice that there are multiple options for everything except for drawing, elephant, and barn making the last 3 the likely culprits. They then hover over each option, noticing that 'drawing' has by far the largest portion of black-and-white images, identifying it as the cause.\\
+Wanting to experiment with another style they repeat the process with a slightly varied prompt: \enquote{A photo of an elephant munching on a stack of hay in a barn, oil painting} adding the newly generate images to the pre-existing. They compare the new and old images by selecting different word combinations in the DAG. The oil painting style mostly produces more saturated colors and softer edges. However, when examining images tagged with both \emph{realistic} and \emph{oil painting}, they observe that the outputs have more painting qualities while losing photo realism a result of the conflicting descriptors. After exploring further they note that the other previous findings hold true for the newly added images for example fish still generating rarely while the background is always accurate.
 
  With these newfound insights about how different prompt components affect the generated outputs, they close the tool and proceed to create their presentation image, now better equipped to craft an effective prompt.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{usecasePrompt1.png}
-	\caption{Figure showing the prompt field where the user types the prompt and customizes the suggestion by the LLM}
+	\caption{Figure showing the prompt field where the user types the prompt and customizes the suggestion opting for 2 alternatives for each selected word each being 1 word long}
 	\label{fig:usecasePrompt1}
 \end{figure}
 \begin{figure}[H]
 		\centering
 	\includegraphics[width=\linewidth]{usecaseQualityDag.png}
-	\caption{Figure showing an example selection in the dag and the corresponding images in the scatter plot, both highlighted red}
+	\caption{Figure showing an example selection in the DAG and the corresponding images in the scatter plot, both highlighted red}
 	\label{fig:usecaseQualityDag}
 \end{figure}
 \begin{figure}[H]
@@ -581,12 +582,21 @@ Then the user notes an anomaly in the displayed data: a series of black-and-whit
 	\caption{Figure showing a lens selection in the scatter plot, the grid displaying the corresponding images in large without overlay and the dag showing the corresponding prompt paths}
 	\label{fig:usecaseQualityScatter}
 \end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{usecaseQualityPaintingDagZoom.png}
+	\caption{Figure showing the selection of \enquote{oil painting} in the dag while being zoomed in on the images}
+	\label{fig:usecaseQualityPaintingDagZoom}
+\end{figure}
 
 
 \chapter{conclusion}
 \chapter{discussion}
 \label{chap:zusfas}
-With our approach we successfully allowed the user 
+With the approach of visualizing large image-prompt spaces and their relationship, we allow for user to grasp 
+
+
+and images for large date sets  we successfully allowed the user 
 Our approach can achieve a comprehensive overview over prompt and image space together, so long as the data isn't too different from each other. Since then both dag and scatter plot would suffer in their effectiveness, the dag would be branching to far and growing too large due to aggregation being scarcely possible if the words are too different and the scatter plot would be scattered displaying a bunch of individual dissimilar points with insufficient clustering or similarity sorting.\\ If both image and text data are sufficiently similar the user can explore the text and image space relatively quickly even for large data sets allowing them to better understand the relationship between prompt and generated image as well as adding new prompt-image pairs and seeing how they compare in their respective graph, which helps the user in finding their desired output.
 
 
