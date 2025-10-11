@@ -372,7 +372,7 @@ In this thesis concept drift refers to the changing the intent of the user while
 
 
 where a model has been trained under a certain data set (the training data), but the data it is now applied on has shifted from the training data set, making the model less effective 
-\chapter{Approach}
+\chapter{Approach/technical details? necesssary details for implementation}
 This work aims to highlight the relationship between prompt and generated image in order for the user to better understand how changes in the prompt affect the generated images. \\
 A major challenge is visualizing the connection between the prompt and the image especially for many the prompt image pairs that are normally created during the creative process when utilizing an image generation model.\\
 For this an interactive approach is chosen  between a visualization of the images and the prompts.\\ Research led to chose a 2D scatter plot for images where circles with the individual image inside are vectorized and  displayed based on their similarity determined by U-map. To display the prompts and allow their easy readability and association with its corresponding prompt a sideways dag-tree was chosen where nodes are computed via the following steps 1. clean up the prompt, removing all special characters numbers and remove articles, pronouns, Auxiliary verbs and some prepositions (of, to, and, or, for) aswell as (with, without, from, by, as) while keeping others (in, at, on) that are deemed to be semantically significant for the image generation. 2. The initial nodes are formed consisting of the word and the position at which it occurs we only look at unique word positions words that appeared already are disregarded though their relationships (parent-child) are recorded, additionally we save whether the word has a child or whether any prompt ends with the word position pair. 3. We merge nodes that only have 1 child and which no prompt ends with. 4. collapse adjacent nodes with same entries 5. Last a couple sweeps with the barycenter heuristic to reduce edge crossings giving the graph a clearer look.\\
@@ -380,7 +380,7 @@ For this an interactive approach is chosen  between a visualization of the image
 
 
 
-\section{dag}
+\section{directed acyclic graph}
 In the following the dag progression for different steps will be shown to visualize the changes. In order for them to be easier to follow only 5 prompts will be chosen. We can see that initially relations between the prompts are hard to glean, even with only 5 prompts comparing the text and identifying the similarities and difference is quite a chore for the human visual complex. Removing stop and function words makes it a little easier due to the text content decreasing however it's still hard and will only exponentially increase in difficulty when adding more prompts (imagine trying to compare 50 or 100 prompts "by hand").\\
 Just by aggregating words at the same position and indicating their relation via edges we can already see noticeable improvements, which are only further pronounced when collapsing nodes containing "phrase words", words that appear at that position only next to a relative.\\
 However we have lost the crucial information of what nodes belong together with multiple new sentences being possible when just following the graph structure, due to the an edge aggregations followed by an edge split. To remedy this a hover function is introduced where when hovering a node all the node relatives from the original data are shown. This allows for an easier overview and and comparability of the nodes, this approach can scale quite well if prompts are sufficiently similar (if all prompts would differ at every position we'd just have a prompt list again).
@@ -485,6 +485,8 @@ The key strength of D3 is its declarative data binding: datasets can directly dr
 For the general framework a web-application was chosen utilizing html, JS and css for the frontend and python for the backend.
 This allows for fast light weight prototyping and easy adpatability. 
 \chapter{use case example}
+\chapter{discussion}
+was hat funktioniert was nicht was besser machen/ändern
 \chapter{Conclusion}
 \label{chap:zusfas}
 Our approach can achieve 
