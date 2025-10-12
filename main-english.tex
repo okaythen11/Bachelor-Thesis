@@ -86,9 +86,7 @@
 \cleardoublepage
 
 %Solely for German courses of study
-\section*{Kurzfassung}
 
-<Kurzfassung der Arbeit>
 
 \cleardoublepage
 
@@ -125,25 +123,16 @@
 % an der passenden Stelle im Fließtext erzwungen werden.
 
 \listoffigures
-\listoftables
+
 
 %Wird nur bei Verwendung von der lstlisting-Umgebung mit dem "caption"-Parameter benoetigt
 %\lstlistoflistings
 %ansonsten:
-\ifdeutsch
-  \listof{Listing}{Verzeichnis der Listings}
-\else
-  \listof{Listing}{List of Listings}
-\fi
+
 
 %mittels \newfloat wurde die Algorithmus-Gleitumgebung definiert.
 %Mit folgendem Befehl werden alle floats dieses Typs ausgegeben
-\ifdeutsch
-  \listof{Algorithmus}{Verzeichnis der Algorithmen}
-\else
-  \listof{Algorithmus}{List of Algorithms}
-\fi
-%\listofalgorithms %Ist nur für Algorithmen, die mittels \begin{algorithm} umschlossen werden, nötig
+ofalgorithms %Ist nur für Algorithmen, die mittels \begin{algorithm} umschlossen werden, nötig
 
 % Abkürzungsverzeichnis
 \printnoidxglossaries
@@ -225,6 +214,7 @@ Our approach makes concept drift visible and traceable through:
 \end{itemize}
 
 By providing a holistic overview of how prompt variations systematically affect outputs, our tool helps users understand concept drift patterns and develop more effective prompting strategies. \\
+Beginning with chapter 2 we briefly go over the  history of generative models, introduce large-language-models (LLMs),
 
 \chapter{Background}
 \label{chap:k2}
@@ -236,20 +226,49 @@ This section serves as an introduction to topics, concepts and techniques that a
 
 %Broad applications: image synthesis, text generation, audio, video
 
-Generative models are a relatively recent phenomenon in the field of AI, they aim to create new unseen data that fits the data they have been trained upon. The most prominent of them are image generation models with the first models capable of generating complex images emerging in 2013 they are called VAE (variational autoencoders) named after the architecture they are based on (Auto-Encoding Variational Bayes) and work by making stochastic sampling differentiable \cite{kingma2022autoencodingvariationalbayes}, however early adaptations resulted in blury and low resolution images.
-Then in 2014 goodfellow et. all {goodfellow2014generativeadversarialnetworks} proposed a new process for estimating generative models using an adverserial approach, this is realized by using a two part architecture in training, a generator and a discriminator both neural networks. The generator outputs a sample from noise and the discriminator tries to classify whether that sample is a from a real data distribution or generated based on the result of the discriminator the generators weights are adjusted to result in a less distinguishable output. This approach results in more realistic higher quality images, since the generator is trained to "fool" the discriminator into thinking its output is real. 
 
-In 2017 Vaswani et al pusblished their breakthrough paper \verb|“Attention Is All You Need”| \cite{vaswani2023attentionneed} introducing transformer architecture for AI %self-attention, positional encoding, encoder–decoder structure 
-originally intended for sequence-to-sequence tasks their adaptation too generative AI was very successful, with early models using transformer architecture like GPT-1 \cite{GPT-1} and BERT \cite{devlin2019bertpretrainingdeepbidirectional} being quite capable for their respective tasks. However early transformer models for image generation such as Image Transformer \cite{parmar2018imagetransformer} struggeled with producing high quality images, while later attempts and hybrid architecture led to better performance generating images. Then in 2020 Ho et. al published their landmark paper "Denoising Diffusion Probabilistic Models" where they adpated diffusion models for image generation running on transformers.
-Subsequent improvements of the approach make diffsion models the state-of-the-art for image generation, which is why they were used for image generation in this work. %add reference to stable diffusion or models being used for live generation
 
-\section{LLMs}
-Large-Language-Models (LLMs) have emerged in the field of natural language processing (nlp) but have since transcended their original purpose, most of them function by predicting the next token utilizing a transformer architecture and large scale pre-training on massive amounts of data they are able to achieve impressive results text generation and summarization to translation, reasoning, and dialogue. Their big breakthrough was in 2020 with Brown et al. publishing GPT-3 \cite{brown2020languagemodelsfewshotlearners} first showing  that scaling the number of parameters and training data substantially improves performance. However despite their impressive capabilities LLMs are faced with several drawbacks, they are computationally expensive requiring large resource hungry data centers to train and service request at scale, additionally they may show bias or inaccuracy in their responses depending on the underlying training data, which makes sourcing quality data at the required scale a major challenge LLM developers face. Another negative is their non applicability in safety critical environments due to hallucination, where the model generates plausible but incorrect outputs.
+Generative models are a class of AI models that aim to create new, previously unseen data fitting the distribution of their training data. The most prominent application is image generation, where models learn to produce realistic or artistic images from various input modalities.
+
+\subsubsection{Early Approaches: VAEs and GANs}
+
+The first models capable of generating complex images emerged in 2013 with Variational Autoencoders (VAEs), named after their underlying architecture (Auto-Encoding Variational Bayes). VAEs work by making stochastic sampling differentiable \cite{kingma2022autoencodingvariationalbayes}, enabling gradient-based optimization of generative processes. However, early implementations resulted in blurry, low-resolution images, limiting their practical applications.
+
+In 2014, Goodfellow et al.\ \cite{goodfellow2014generativeadversarialnetworks} proposed a new approach for training generative models using an adversarial process. Generative Adversarial Networks (GANs) use a two-part training architecture: a generator and a discriminator, both neural networks. The generator produces samples from random noise, while the discriminator attempts to classify whether each sample comes from the real data distribution or is generated. Based on the discriminator's feedback, the generator's weights are adjusted to produce less distinguishable outputs. This adversarial training approach results in more realistic, higher-quality images, since the generator is trained to ``fool'' the discriminator into believing its outputs are real. GANs significantly improved image quality compared to VAEs but suffered from training instability and mode collapse issues.
+
+\subsubsection{Transformer Architecture and Its Impact}
+
+In 2017, Vaswani et al.\ published their breakthrough paper ``Attention Is All You Need'' \cite{vaswani2023attentionneed}, introducing the transformer architecture, originally designed for sequence-to-sequence tasks in natural language processing. Transformers use self-attention mechanisms to process input sequences, enabling parallel computation and better capturing of long-range dependencies compared to recurrent neural networks. Their adaptation to generative AI proved highly successful, with early transformer-based models like GPT-1 \cite{GPT-1} and BERT \cite{devlin2019bertpretrainingdeepbidirectional} demonstrating strong capabilities for their respective tasks.
+
+However, early attempts to apply transformers directly to image generation, such as Image Transformer \cite{parmar2018imagetransformer}, struggled to produce high-quality images due to the computational complexity of processing high-dimensional image data. Later hybrid architectures combining transformers with convolutional approaches achieved better performance.
+
+\subsubsection{Diffusion Models: Current State-of-the-Art}
+
+In 2020, Ho et al.\ published their landmark paper ``Denoising Diffusion Probabilistic Models'' \cite{ho2020denoisingdiffusionprobabilisticmodels}, introducing a fundamentally different approach to image generation. Diffusion models work by learning to reverse a gradual noising process: during training, they learn to remove noise added to real images in small steps; during generation, they start with pure noise and iteratively denoise it into a coherent image. This process is guided by text embeddings (in text-to-image models) that condition the denoising steps.
+
+Subsequent improvements, including latent diffusion models \cite{rombach2022highresolutionimagesynthesislatent} which operate in a compressed latent space rather than pixel space, have made diffusion models the current state-of-the-art for image generation. These models power popular systems like Stable Diffusion \cite{stable-diffusion}, Midjourney \cite{midjourney}, and DALL-E, capable of generating photorealistic images and diverse artistic styles from natural language descriptions.\\
+The focus of this work lies in evaluating input-output relationships of generative models, we used Stable Diffusion, however our approach is model independent as the model origin of the prompt-image pairs is not relevant to it.
+
+
+
+
+
+\subsection{Large Language Models}
+
+Large Language Models (LLMs) are neural networks trained on massive amounts of text data, to predict the next token in a sequence. Most modern LLMs utilize transformer architectures \cite{vaswani2023attentionneed} and achieve impressive performance across diverse natural language processing tasks, including text generation, summarization, translation, reasoning, and dialogue.
+
+Their breakthrough came in 2020 when Brown et al.\ published GPT-3 \cite{brown2020languagemodelsfewshotlearners}, demonstrating that substantially scaling both model parameters and training data improves performance across tasks. This scaling paradigm has driven the development of increasingly larger and more capable models like GPT-5 \cite{GPT-4o}, Claude\cite{anthropic2024claude}, and open-source alternatives such as LLaMA \cite{touvron2023llama}.
+
+Despite their impressive capabilities, LLMs face several challenges. They are computationally expensive, require large resource-intensive data centers for both training and inference at scale and may exhibit biases or inaccuracies reflecting their training data, making high-quality data curation a major challenge for LLM developers. Additionally, LLMs are prone to \textit{hallucination}---generating plausible but factually incorrect outputs---which limits their applicability in safety-critical environments.
+In this work we use GPT-5 to generate prompt alternatives.
+
+
+
 
 \section{prompt engineering}
 In order to use the models introduced in the last sections we need to "prompt" them that means entering a text or an image with instructions for the model based on which some output will be generated. Here what and how we type the prompt is important for the performance of the model as  \cite{zhang2025understandingrelationshippromptsresponse} and \cite{li2024effectsdifferentpromptsquality} have shown for their respective selected tasks. This importance of the prompt has created a whole new field of research called "prompt engineering" where people are trying to find techniques and tricks to improve model output or even bypass certain restrictions. This can be done by hand where humans try to improve prompts through trial-error and evaluation or automatically with some evaluation metric where algorithms or even other machine learning models test through many different prompts and evaluate their performance. This has resulted in several different techniques such as few-shot learning (FSL) \cite{few-shot} where the model is trained to learn a new task on a small (<100) number of labeled examples, the most useful few-shot approach for normal users is in-context learning \cite{in-context-learning} where the users provides examples in the prompt, which the model than uses to infer a pattern which it then applies. \\ Other techniques include Chain-of \cite{chain-of-thought} which aims to improve the reasoning of an LLM by instructing it to show it's reasoning and including examples of intermediate reasoning steps in the prompt. It is especially useful for mathematical problem-solving and commonsense reasoning. Structured output prompting instructs the prompt to provide the response in a formatted way such that is fits for example a json or xml file, this is done to enable smooth parsing of an LLM response and especially useful when integrating the model in a framework or other pieces of automates software. Restricting the output format can negatively impact the performance in some cases especially reasoning tasks, it is however mostly consistent and depending on task and model sometimes even improves. \cite{tam2024letspeakfreelystudy}.
 
-To achieve accurate results some prompt engineering principles were also employed in this thesis.
+The goal of this work is to ultimately assist in prompt engineering, some prompt engineering principles were also employed when generating prompt alternatives.
 
 \section{vectorization of images}
 Comparing images is an old and non-trivial problem that is also afflicted by subjectivity, as humans might rate different images as more similar or dissimilar based on individual factors. Human evaluation also takes longer and is more costly which is why a mathematical method is crucial. 
@@ -424,9 +443,9 @@ For this an interactive approach is chosen  between a visualization of the image
 
 
 \section{dag}
-In the following the dag progression for different steps will be shown to visualize the changes. In order for them to be easier to follow only 5 prompts will be chosen. We can see that initially relations between the prompts are hard to glean, even with only 5 prompts comparing the text and identifying the similarities and difference is quite a chore for the human visual complex. Removing stop and function words makes it a little easier due to the text content decreasing however it's still hard and will only exponentially increase in difficulty when adding more prompts (imagine trying to compare 50 or 100 prompts "by hand").\\
-Just by aggregating words at the same position and indicating their relation via edges we can already see noticeable improvements, which are only further pronounced when collapsing nodes containing "phrase words", words that appear at that position only next to a relative.\\
-However we have lost the crucial information of what nodes belong together with multiple new sentences being possible when just following the graph structure, due to the an edge aggregations followed by an edge split. To remedy this a hover function is introduced where when hovering a node all the node relatives from the original data are shown. This allows for an easier overview and and comparability of the nodes, this approach can scale quite well if prompts are sufficiently similar (if all prompts would differ at every position we'd just have a prompt list again).
+In the following the dag progression for different steps will be shown to visualize the changes. In order for them to be easier to follow only 5 prompts have been chosen. We see that initially relations between the prompts are hard to glean, even with only 5 prompts comparing the text and identifying the similarities and difference is quite a chore for the human visual complex. Removing stop and function words makes it a little easier due to the text content decreasing however it's still hard and will only exponentially increase in difficulty when adding more prompts (imagine trying to compare 50 or 100 prompts "by hand").\\
+Just by aggregating words at the same position and indicating their relation via edges we can already see noticeable improvements, these are further pronounced when collapsing nodes containing "phrase words", words that appear at their position only next to one relative.\\
+However with only this overview we have lost the crucial information of what nodes belong together with multiple new sentences being possible when just following the graph structure, when an edge aggregation is followed by an edge split. To remedy this a select-and-hover function is introduced where we can select nodes then when hovering a node all the selected and hovered nodes relatives from the original data are shown. This allows for an easier overview and and comparability of the nodes, this approach can scale quite well if prompts are sufficiently similar (if all prompts would differ at every position we'd just have a prompt list again).
 
 \begin{figure}[H]        % 'h' = place here (optional)
 	\centering           % centers the image
@@ -497,7 +516,7 @@ To represent the images a scatterplot was chosen, this was due to 2D representat
 	\centering
 	\includegraphics[width=\linewidth]{gridGeometric.png}
 	\caption{ScatterPlot with Lens selection displaying grid with geometirc sorting}
-	\label{fig:scatterNoSSIM}
+	\label{fig:scatterGeometric}
 \end{figure}
 
 
