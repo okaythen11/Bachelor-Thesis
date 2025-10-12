@@ -36,8 +36,8 @@
   course={Informatik},
   examiner={Dr. Steffen Koch},
   supervisor={Jena Satkunaranjan},
-  startdate={April 10, 2025},
-  enddate={Oktober 10, 2025}
+  startdate={April 08, 2025},
+  enddate={Oktober 13, 2025}
 ]{scientific-thesis-cover}
 
 \input{acronyms}
@@ -209,26 +209,22 @@
 
 
 \chapter{Introduction}
+With the growing capabilities of artificial intelligence (AI) models in recent years, their usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030. Perhaps the most popular AI models today are large language models (LLMs), which demonstrate impressive language understanding and reasoning capabilities. Alongside them, generative models have emerged, finding applications in music, video, voice, and primarily image generation. These models can create entire complex, high-quality scenes within seconds, thanks to major advances in recent years. Leading examples such as Midjourney \cite{midjourney}, Stable Diffusion \cite{stable-diffusion}, and GPT-4o \cite{GPT-4o} are able to produce photorealistic images as well as artworks in many different styles and forms. They allow people to explore their creativity with few technical limitations, shifting the main challenge toward their effective goal-driven usage.
 
-This thesis starts with \cref{chap:k2}.
+The most common approach when using image generation models is providing a textual prompt from which the model then generates an image. Other forms of prompts include pictures or sounds, but text remains the most widely used. The problem with the textual approach is its ambiguity: the user does not know how exactly the model will process the prompt or what the main drivers for changes in image output are. More concisely, to the average user, the model behaves like a black box, which makes structured testing to analyze the model's behavior given changing inputs difficult, leading to many trial-and-error attempts that are often too numerous to properly remember or categorize. Consequently, getting the desired result can be challenging and sometimes feel arbitrary.
 
-We can also typeset \verb|<text>verbatim text</text>|.
-Backticks are also rendered correctly: \verb|`words in backticks`|.
+Many attempts have been made to aid users facing these problems, such as extending and improving multi-modal inputs---for example, allowing users to provide both a text prompt and a rough sketch to an image generation model for more control \cite{lin2025sketchflexfacilitatingspatialsemanticcoherence}. Another promising direction is helping users adjust prompts automatically \cite{10.1145/3729176.3729203,You2024Aesthetic}, as well as hybrid human-in-the-loop approaches that offer both prompt improvement/adjustment and result visualization together with the input \cite{PromptMagician,mishra2025promptaidpromptexplorationperturbation,brade2023promptifytexttoimagegenerationinteractive,guo2024prompthisvisualizingprocessinfluence,promptCharm}.
 
-With the growing capabilities of artificial-intelligence(AI)-models in recent years, its usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030.
+While existing work focuses on small-scale prompt-image pairs with fine-grained adjustments to understand and improve the prompt-image relationship, we present a tool designed for exploring and understanding what we call \textit{concept drift} in generative models, the different conceptual directions a user or model can take when generating images.
 
+Our approach makes concept drift visible and traceable through:
+\begin{itemize}
+	\item \textbf{Automated prompt variation:} An LLM-based system that generates prompt alternatives, enabling exploration of the conceptual space.
+	\item \textbf{Dual interactive visualization:} Two graphs displaying prompt-image data, a scatter plot displaying images based on similarity, a directed acyclic graph (DAG) displaying the prompt structure 
+	\item \textbf{Linked visualization:} We showscase a bidirectional mapping between both graphs enabling users to easily map content of one graph to the other, helping with understanding the conceptual directions the model takes, based on inputs.
+\end{itemize}
 
-
-Perhaps the most popular AI models today are LLMs, which demonstrate impressive language understanding and reasoning capabilities. Alongside them, generative models have emerged, finding use cases in music, video,voice and mainly image generation. These models can create entire complex, high-quality scenes within seconds, thanks to major advances in recent years. Leading examples such as MidJourney \cite{midjourney}, Stable Diffusion \cite{stable-diffusion}, and GPT-4o \cite{GPT-4o} are able to produce photo-realistic images as well as artworks in many different styles and forms. They allow people to explore their creativity with few technical limitations, shifting the main challenge toward effective goal driven usage of them. 
-
-The most common approach when using image generation models is providing a textual prompt from which the model then generates an image. Other forms of prompts include pictures or sounds, but text remains the most widely used. The problem with the textual  approach is its ambiguity, the user does not know how exactly the model will process the prompt or what the main drivers for changes in image output are. More concisely to the average user, the model behaves like a black box, which makes structured testing to analyze the models behavior given changing inputs difficult, leading to many trial and error attempts of which are often to numerous to properly remember or categorize in a traditional setting. Consequently getting the desired result can be challenging and sometimes feel arbitrary.\\
-Many attempts have been made to aid the user facing these problems such as extending and improving multi-modal inputs, for example the user being able to provide a text-prompt and a rough sketch to an image generation model allowing for more control  \cite{lin2025sketchflexfacilitatingspatialsemanticcoherence}. \\Another promising direction is helping user adjust prompt automatically \cite{10.1145/3729176.3729203,You2024Aesthetic},
-as well as hybrid human in the loop approaches that offer both improving/adjusting prompt and visualizing the results together with the input (prompt) \cite{PromptMagician,mishra2025promptaidpromptexplorationperturbation,brade2023promptifytexttoimagegenerationinteractive,guo2024prompthisvisualizingprocessinfluence,promptCharm}
-%add promptthis pomptify promptaid references add promptcharm/promptmagician to related work 
-While these works focus on smaller scale prompt image pairs and more fine grain adjustments in order to understand and improve the prompt image relationship, in this work we try to implement a scale adjustable automated but customizable prompt variation and visualization tool with the focus on  facilitating the generation of large image spaces and visualizing the relationship of big prompt-image datasets.\\
-We aimed to achieve this through a frame work which has a basic text field that allows the user to customize how the an LLM will adjust and vary the prompt before generating. As well as 2 interactive graphs, a scatterplot displaying the images based on similarity and a directed acyclic graph (dag) with words as nodes to visualize the prompts. Both graphs have functionality that maps data from one to the other allowing the user to understand the relationship between model in and output.
-
-The goal of this thesis is therefore to conceptualize and develop a visual-interactive approach that helps to understand how changes in a prompt impact the generated image.For this we will introduce an interactive framework between 2 graphs as well as a prompting aid for the user.\\
+By providing a holistic overview of how prompt variations systematically affect outputs, our tool helps users understand concept drift patterns and develop more effective prompting strategies. \\
 
 \chapter{Background}
 \label{chap:k2}
@@ -410,6 +406,9 @@ Inspired by the last two approaches we present a variation of a word tree for pr
 	\label{fig:sentenTree}
 \end{figure}
 \section{Concept Drift in Generative models}
+So concept drift = the phenomenon where AI models shift between different conceptual interpretations/outputs based on prompt variations, and your tool is designed to visualize and analyze these shifts systematically.
+
+
 Traditionally, concept drift in machine learning refers to a change in the mapping between input data and output labels over time. A model is trained on a particular data distribution, but as the relationship between data features and model classification shifts, its predictions become less reliable. For example, a spam email detector trained on data from five years ago may struggle today because spammers use new patterns and tactics that the model never learned, causing it to missclassify more modern spam.\\
 In this thesis concept drift refers to the changing the intent of the user while prompting the image generation model. Where in a normal use case it is likely that the prompt will be adjusted altered modified and specified many times in order to achieve the desired end result. This work aims to visualize that process and easy narrowing in on a desired prompt by providing an overview between the image and the prompt space hopefully allowing the user to identify what parts of the image changes based on the changes in the prompt.
 
@@ -593,21 +592,37 @@ Wanting to experiment with another style they repeat the process with a slightly
 \chapter{conclusion}
 \chapter{discussion}
 \label{chap:zusfas}
-With the approach of visualizing large image-prompt spaces and their relationship, we allow for user to grasp 
+With the approach of visualizing large image-prompt spaces and their relationship in 2 separate interactive graphs, we allow the user to quickly gain an overview over the prompt-image space through interaction with both graphs, as well as adding new prompt-image pairs after making an observation. This enables them to identify how changes in the prompt affect the generated output. From this the user can generalize to the models behavior, struggles with complex poses like sitting, drawing sometimes black and white, background always accurate etc.. The tool is quick and easy to learn however the user needs to make their own observations.\\
+Both image data and DAG data need to be sufficiently similar, otherwise this approach would struggle with effectively visualizing the data space. The DAG would be branching to far and growing too large due to aggregation being scarcely possible if the words are too different and the scatter plot would be scattered displaying a bunch of individual dissimilar points with insufficient clustering or similarity sorting.\\
+For a large image space (>1000) the tool struggles with long response time from the image generation model, and with older hardware significant lag in d3s zooming and pan behavior. The scatter plot becomes quite growded making the lens selection and grid necessary to identify otherwise over layered images.\\
+Compared to other works like \cite{PromptMagician}, we focus solely on a comparatively large prompt-image space, lacking options to customize model hyper parameters and model attention. This makes the tool initially easier to use but allows for less possibilities.
 
 
-and images for large date sets  we successfully allowed the user 
-Our approach can achieve a comprehensive overview over prompt and image space together, so long as the data isn't too different from each other. Since then both dag and scatter plot would suffer in their effectiveness, the dag would be branching to far and growing too large due to aggregation being scarcely possible if the words are too different and the scatter plot would be scattered displaying a bunch of individual dissimilar points with insufficient clustering or similarity sorting.\\ If both image and text data are sufficiently similar the user can explore the text and image space relatively quickly even for large data sets allowing them to better understand the relationship between prompt and generated image as well as adding new prompt-image pairs and seeing how they compare in their respective graph, which helps the user in finding their desired output.
+Our approach, which visualizes the prompt-image space through two linked interactive graphs, enables users to efficiently explore the relationships between text prompts and their corresponding generated images. By interacting with both the scatter plot and the directed text-DAG, and iteratively as well as adding new prompt-image pairs based on their observations, users can quickly identify how specific prompt modifications influence the visual output. This process facilitates the generalization of the model's underlying behavior, allowing users to deduce its common tendencies such as a struggle with complex poses (e.g., "munching"), a tendency to generate in multiple styles given certain modifiers (e.g. black-and-white as well as color images for "drawing"), and a consistent accuracy in rendering backgrounds. These insights have practical value for prompt engineering especially for novice users. Understanding which prompt components reliably affect outputs versus which produce inconsistent results allows users to craft more effective prompts with fewer iterations. Rather than trial-and-error experimentation, users can develop systematic strategies based on observed patterns.
+
+The effectiveness of this method depends on sufficiently similar data. If the prompt-image pairs are too dissimilar, the DAG would fail to aggregate nodes meaningfully, resulting in excessive branching and an unwieldy structure. Similarly, the scatterplot would devolve into a disorganized set of points lacking meaningful clusters, thereby hindering the discovery of patterns. This is not a concern when the user uses the LLM-prompt-suggestion feature can however become one when adding many new dissimilar prompts.
+
+A technical limitation of our tool is its scalability. For large datasets exceeding 1,000 images, two significant challenges arise: long waits for responses from the image generation model and significant latency for the D3.js zooming and panning interactions. Furthermore, a crowded scatter plot necessitates the use of the lens and grid selection tools to resolve overlapping images, which adds a layer of interaction complexity.
+
+Our work occupies a distinct position in the landscape of prompt visualization tools. While systems like PromptMagician \cite{PromptMagician} provide granular control over model hyperparameters and attention mechanisms with a focus on clustered representative images, our tool prioritizes breadth of exploration over depth of control. This design choice reflects our goal of supporting discovery and understanding rather than fine-tuned generation.
+This trade-off has advantages: Lower cognitive load makes the tool accessible for users exploring unfamiliar models or beginning prompt engineering. The comprehensive view of the prompt-image space reveals patterns that might be missed when focusing on a few representative examples. However, this comes at the cost of advanced customization—users seeking precise control over attention weights or specific model parameters would benefit more from tools like PromptMagician.
 
 
-negatives: add more models dag path not always identifying \enquote{unique} paths when path merges and splits again not all displayed possibilities have to be in the data, 
-for very large image collections zooming and panning becomes necessary taking more time to grasping image and prompt space, response time when creating large amounts of images very slow \\
--d3 has problems when trying to zoom and pan with large amounts of data grid becomes essential to view overlapping images
+
+
+
+
+
+
+
+
+
+
 
 
 
 \section{Outlook}
-Include hyper parameters, and model attention (for attention potentially vary word size in dag based on attention given to each word, hard for multiple prompts with different attention distribution, could be solved for single prompt by showing dag and attention sizes on hover of single image), try to add them in visualization, make images have wider variety, try to find a way to make dag graph more identifiable without blowing size up like word tree. Improve ve response time (model and hardware issue), potentially allow for user to pick prompt alternatives. Perhaps move clusters closer together (if far apart) for better user overview. If data is too different perhaps an approach to categorize it and then aggregate categories could work.\\
+Include hyper parameters, and model attention (for attention potentially vary word size in dag based on attention given to each word, hard for multiple prompts with different attention distribution, could be solved for single prompt by showing dag and attention sizes on hover of single image), try to add them in visualization, make images have wider variety, Improve ve response time (model and hardware issue),  allow user possibility to pick prompt alternatives.
 Divide an conquer approach allow free selection of images and display them in smaller scatter plot and dag if desired by user
 
 \printbibliography
