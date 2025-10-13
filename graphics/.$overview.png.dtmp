@@ -1,0 +1,126 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
+  <diagram name="Seite-1" id="V8GhA4YtSTek6hg0nHs_">
+    <mxGraphModel dx="1036" dy="614" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="UdbegxGODIAIY33oApRj-1" value="user" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+          <mxGeometry y="210" width="50" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-9" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="190" y="220" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-10" value="Prompt Input field" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="200" y="240" width="115" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-11" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="414" y="90" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-12" value="LLM" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="449" y="90" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-13" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="UdbegxGODIAIY33oApRj-14" target="UdbegxGODIAIY33oApRj-9" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-16" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="UdbegxGODIAIY33oApRj-1" target="UdbegxGODIAIY33oApRj-14" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="60" y="255" as="sourcePoint" />
+            <mxPoint x="178" y="255" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-14" value="prompt with modification whishes" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="60" y="240" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-17" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="190" y="90" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-18" value="&lt;font&gt;Backend&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="230" y="90" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-19" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="UdbegxGODIAIY33oApRj-9" target="UdbegxGODIAIY33oApRj-17" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="300" as="sourcePoint" />
+            <mxPoint x="450" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-20" value="user prompt with modification whishes" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="190" y="180" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-21" value="creates prompt for LLM" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="210" y="130" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-22" value="" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="UdbegxGODIAIY33oApRj-17" target="UdbegxGODIAIY33oApRj-17" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="320" as="sourcePoint" />
+            <mxPoint x="450" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-23" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="UdbegxGODIAIY33oApRj-17" target="UdbegxGODIAIY33oApRj-11" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="330" y="130" as="sourcePoint" />
+            <mxPoint x="450" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-24" value="prompt" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="340" y="100" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-25" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="UdbegxGODIAIY33oApRj-11" target="UdbegxGODIAIY33oApRj-11" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="350" as="sourcePoint" />
+            <mxPoint x="450" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-27" value="generates new prompt(s)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="434" y="130" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-28" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="600" y="90" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-29" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="UdbegxGODIAIY33oApRj-28" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="540" y="125" as="sourcePoint" />
+            <mxPoint x="450" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-30" value="Image generation model" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="600" y="110" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-31" value="prompt(s)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="544" y="90" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-32" value="" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="598.5" y="220" width="143" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-33" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="UdbegxGODIAIY33oApRj-28" target="UdbegxGODIAIY33oApRj-32" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="350" as="sourcePoint" />
+            <mxPoint x="450" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-35" value="prompts and generated images" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="610" y="170" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UdbegxGODIAIY33oApRj-36" value="DAG and scatter plot" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="610" y="240" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="mi2pPOyPDor92NX7k-TO-1" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="UdbegxGODIAIY33oApRj-32">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="50" y="320" as="sourcePoint" />
+            <mxPoint x="670" y="300" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="50" y="320" />
+              <mxPoint x="120" y="320" />
+              <mxPoint x="670" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mi2pPOyPDor92NX7k-TO-2" value="interacts with" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="354" y="290" width="80" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

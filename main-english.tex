@@ -29,10 +29,13 @@
 
 
 \usepackage[
-  title={},
+  title={Visual analysis of concept drift in generative models},
   author={Oliver Seiz},
   type=bachelor,
-  institute=visus, % or other institute names - or just a plain string using {Demo\\Demo...}
+  institute={Institute for Visualization and Interactive Systems\\
+  University of Stuttgart\\
+  Universitätsstraße 38\\
+  D–70569 Stuttgart}, % or other institute names - or just a plain string using {Demo\\Demo...}
   course={Informatik},
   examiner={Dr. Steffen Koch},
   supervisor={Jena Satkunaranjan},
@@ -81,7 +84,13 @@
 %auch im Stil vom Inhaltsverzeichnis
 \section*{Abstract}
 
-<Short summary of the thesis>
+	Text-to-image generative models can produce high-quality images from textual prompts, but understanding how prompt modifications affect outputs remains challenging. Small changes can trigger dramatic conceptual shifts while seemingly significant modifications may have minimal impact. Normal users are left with a trial-and-error approach to make sense of conceptual shifts, lacking a holistic overview of conceptual directions. 
+	
+	We present Prompt Vision, a visual-interactive system to explore concept drift in text-to-image generation. Our approach combines automated LLM-based prompt variation with dual linked visualizations: a scatter plot showing semantic organized based on image similarity and a directed acyclic graph displaying the prompt structure. This enables users to systematically explore large prompt-image spaces (400+ variations) and trace visual patterns back to specific prompt components.
+	
+	Through a detailed use case with Stable Diffusion, we demonstrate that users can identify systematic model behaviors—such as reliable rendering of backgrounds but struggles with complex actions—and develop more effective prompting strategies. Our work shows that visualizing concept drift makes the prompt-image relationship more transparent and controllable, reducing reliance on trial-and-error and supporting more systematic exploration of generative AI capabilities.
+
+
 
 \cleardoublepage
 
@@ -122,7 +131,7 @@
 % \addtocontents{toc}{\protect\newpage}
 % an der passenden Stelle im Fließtext erzwungen werden.
 
-\listoffigures
+
 
 
 %Wird nur bei Verwendung von der lstlisting-Umgebung mit dem "caption"-Parameter benoetigt
@@ -132,7 +141,7 @@
 
 %mittels \newfloat wurde die Algorithmus-Gleitumgebung definiert.
 %Mit folgendem Befehl werden alle floats dieses Typs ausgegeben
-ofalgorithms %Ist nur für Algorithmen, die mittels \begin{algorithm} umschlossen werden, nötig
+ %Ist nur für Algorithmen, die mittels \begin{algorithm} umschlossen werden, nötig
 
 % Abkürzungsverzeichnis
 \printnoidxglossaries
@@ -198,9 +207,10 @@ ofalgorithms %Ist nur für Algorithmen, die mittels \begin{algorithm} umschlosse
 
 
 \chapter{Introduction}
+\label{sec:introduction}
 With the growing capabilities of artificial intelligence (AI) models in recent years, their usage has become more widely adopted, with some sources claiming 280 million global users in 2024 \cite{AI-users} and projections of up to 1 billion users by 2030. Perhaps the most popular AI models today are large language models (LLMs), which demonstrate impressive language understanding and reasoning capabilities. Alongside them, generative models have emerged, finding applications in music, video, voice, and primarily image generation. These models can create entire complex, high-quality scenes within seconds, thanks to major advances in recent years. Leading examples such as Midjourney \cite{midjourney}, Stable Diffusion \cite{stable-diffusion}, and GPT-4o \cite{GPT-4o} are able to produce photorealistic images as well as artworks in many different styles and forms. They allow people to explore their creativity with few technical limitations, shifting the main challenge toward their effective goal-driven usage.
 
-The most common approach when using image generation models is providing a textual prompt from which the model then generates an image. Other forms of prompts include pictures or sounds, but text remains the most widely used. The problem with the textual approach is its ambiguity: the user does not know how exactly the model will process the prompt or what the main drivers for changes in image output are. More concisely, to the average user, the model behaves like a black box, which makes structured testing to analyze the model's behavior given changing inputs difficult, leading to many trial-and-error attempts that are often too numerous to properly remember or categorize. Consequently, getting the desired result can be challenging and sometimes feel arbitrary.
+The most common way to use an image generation models is providing a textual prompt in natural language from which the model then generates an image. Other forms of prompts may include pictures or sounds, but text remains the most widely used. The problem with using text prompts in the generation process is ambiguity: the user does not know how exactly the model will process the prompt or what the main drivers for changes in the output image are. More concisely, to the average user, the model behaves like a black box. This makes structured testing, to analyze the model's behavior given changing inputs, difficult leading to many trial-and-error attempts that are often too numerous to properly remember or categorize. Consequently, getting the desired result can be challenging and sometimes feel arbitrary.
 
 Many attempts have been made to aid users facing these problems, such as extending and improving multi-modal inputs---for example, allowing users to provide both a text prompt and a rough sketch to an image generation model for more control \cite{lin2025sketchflexfacilitatingspatialsemanticcoherence}. Another promising direction is helping users adjust prompts automatically \cite{10.1145/3729176.3729203,You2024Aesthetic}, as well as hybrid human-in-the-loop approaches that offer both prompt improvement/adjustment and result visualization together with the input \cite{PromptMagician,mishra2025promptaidpromptexplorationperturbation,brade2023promptifytexttoimagegenerationinteractive,guo2024prompthisvisualizingprocessinfluence,promptCharm}.
 
@@ -214,11 +224,11 @@ Our approach makes concept drift visible and traceable through:
 \end{itemize}
 
 By providing a holistic overview of how prompt variations systematically affect outputs, our tool helps users understand concept drift patterns and develop more effective prompting strategies. \\
-Beginning with chapter 2 we briefly go over the  history of generative models, introduce large-language-models (LLMs),
+Beginning with chapter 2, this part has the goal of providing the necessary understanding and motivation for the thesis. In chapter 3 we go over pre-existing approaches similar to our work as well as related key concepts. Chapter 4 details the chosen approach and design goals/decisions while giving an overview and explanation of the frameworks components. Chapter 5 gives a detailed use case describing how one may use our framework and what findings they could infer. Chapter 6 discusses our approach. Chapter 7 concludes the paper.
 
 \chapter{Background}
 \label{chap:k2}
-This section serves as an introduction to topics, concepts and techniques that are relevant to understanding this thesis, introducing the topics of generative models, diffusion models Large-Language-Models (LLMs), prompt engineering, vectorization of images, vector dimensionality reduction, pixel based comparison and visualization techniques. 
+This section serves as an introduction to topics, concepts and techniques that are relevant to understanding this thesis, introducing the topics of generative models, diffusion models Large-Language-Models (LLMs), prompt engineering, vectorization of images, vector dimensionality reduction and pixel based comparison
 \section{Generative models}
 %strutcure
 %Definition: Learning data distributions to generate novel samples
@@ -265,26 +275,57 @@ In this work we use GPT-5 to generate prompt alternatives.
 
 
 
-\section{prompt engineering}
-In order to use the models introduced in the last sections we need to "prompt" them that means entering a text or an image with instructions for the model based on which some output will be generated. Here what and how we type the prompt is important for the performance of the model as  \cite{zhang2025understandingrelationshippromptsresponse} and \cite{li2024effectsdifferentpromptsquality} have shown for their respective selected tasks. This importance of the prompt has created a whole new field of research called "prompt engineering" where people are trying to find techniques and tricks to improve model output or even bypass certain restrictions. This can be done by hand where humans try to improve prompts through trial-error and evaluation or automatically with some evaluation metric where algorithms or even other machine learning models test through many different prompts and evaluate their performance. This has resulted in several different techniques such as few-shot learning (FSL) \cite{few-shot} where the model is trained to learn a new task on a small (<100) number of labeled examples, the most useful few-shot approach for normal users is in-context learning \cite{in-context-learning} where the users provides examples in the prompt, which the model than uses to infer a pattern which it then applies. \\ Other techniques include Chain-of \cite{chain-of-thought} which aims to improve the reasoning of an LLM by instructing it to show it's reasoning and including examples of intermediate reasoning steps in the prompt. It is especially useful for mathematical problem-solving and commonsense reasoning. Structured output prompting instructs the prompt to provide the response in a formatted way such that is fits for example a json or xml file, this is done to enable smooth parsing of an LLM response and especially useful when integrating the model in a framework or other pieces of automates software. Restricting the output format can negatively impact the performance in some cases especially reasoning tasks, it is however mostly consistent and depending on task and model sometimes even improves. \cite{tam2024letspeakfreelystudy}.
 
-The goal of this work is to ultimately assist in prompt engineering, some prompt engineering principles were also employed when generating prompt alternatives.
 
-\section{vectorization of images}
-Comparing images is an old and non-trivial problem that is also afflicted by subjectivity, as humans might rate different images as more similar or dissimilar based on individual factors. Human evaluation also takes longer and is more costly which is why a mathematical method is crucial. 
-One way is to transform an image into something with many pre-existing comparison methods such as a vector where mathematical similarity measurements are well established. There are several ways to turn an image into a vector such as the "classical" approach where feature extraction is hand-engineered such as SIFT \cite{inbook}, however due to greater generalizability, automatic feature extraction and usually better performance methods using specifically trained machine learning models are generally preferred. Which was also the case in this thesis, where the Img2Vec library \cite{patel2019img2vec} was utilized.
+\section{Prompt Engineering}
+In order to use generative models users need to provide a prompt, a form of input guiding the generation process of the model. This prompt is usually in natural language but can also be an image video or sound depending on the model and application.\\
+The quality and structure of prompts significantly impact model performance \cite{zhang2025understandingrelationshippromptsresponse,li2024effectsdifferentpromptsquality}, this makes prompt design a critical skill for effective model usage. And spawned a whole new field of research called \enquote{Prompt Engineering}.
+Prompt engineering refers to the practice of crafting effective usually textual inputs to guide generative models toward desired outputs. In this work, prompt engineering appears in two contexts, we try to aid the user in crafting more effective text-to-image prompts through visualizations and we use LLMs to craft alternative prompts from the initial user prompt.
 
-\section{vector dimensonality reduction}
+\subsection{Prompt Engineering for Text-to-Image Models}
+
+Effective text-to-image prompts should describe visual concepts, compositions, and stylistic attributes \cite{oppenlaender2023taxonomy,liu2022design}. They typically contain subject terms, style modifiers, quality boosters, and composition guidance. Research shows that function words, word ordering and punctuation do not contribute significantly to the output quality \cite{liu2022design}. Prompts are however model-specific thus behavior may vary from model to model. Additionally the stochastic nature of models makes it difficult to reliably predict the effects of word choices \cite{liu2022design,hao2022optimizing}.
+
+\subsection{Prompt Engineering for Language Models}
+
+When using language models to generate content or perform tasks, prompt engineering involves providing clear instructions, context, examples and encouraging reasoning. Several established techniques are commonly used improve LLM performance:
+
+\textbf{Few-shot-learning} \cite{few-shot} few-shot learning (FSL) is a technique where the model is trained to learn a new task on a small (<100) number of labeled examples, the most useful few-shot approach for normal users is in-context learning \cite{in-context-learning} where the users provides examples in the prompt, which the model uses to infer a pattern,  which it applies to new inputs.
+
+\textbf{Chain-of-thought prompting} \cite{chain-of-thought} instructs the model to show its reasoning process, improving performance on reasoning tasks by encouraging intermediate reasoning steps in the prompt. And is primarily used for mathematical and logical problems.
+
+\textbf{Structured output prompting} instructs the model to format responses in specific ways (e.g., JSON, XML), enabling automated parsing. This is essential when integrating LLMs into larger systems. While output constraints can sometimes impact performance on reasoning tasks, they are generally consistent and sometimes even beneficial for generation tasks \cite{tam2024letspeakfreelystudy}.
+
+\subsection{Approaches to Prompt Engineering}
+
+Prompt engineering can be performed manually, automatically, or through hybrid approaches:
+
+\textbf{Manual approaches} rely on human iteration: users modify prompts based on outputs, gradually refining toward desired results through trial and error. This process can be time-consuming and requires users to remember which modifications were effective.
+
+\textbf{Automated approaches} use algorithms or other models to generate and evaluate prompt variations. Recent work has explored using LLMs for prompt refinement \cite{10.1145/3729176.3729203,You2024Aesthetic}, leveraging their language understanding to generate improved alternatives.
+
+\textbf{Hybrid approaches} combine human guidance with automated generation, allowing users to specify which aspects to vary while the system generates alternatives \cite{PromptMagician,mishra2025promptaidpromptexplorationperturbation,brade2023promptifytexttoimagegenerationinteractive}. These approaches balance user control with computational efficiency.
+
+
+
+
+
+\section{Vectorization of images}
+\label{sec:vecImg}
+Comparing images is an old and non-trivial problem that is also afflicted by subjectivity, as humans might rate different images as more similar or dissimilar based on individual factors. Human evaluation also takes longer and is more costly which is why a mathematical (computational) method is crucial. 
+One way is to transform an image into something with many pre-existing comparison methods such as a vector where mathematical similarity measurements are well established. There are several ways to turn an image into a vector such as the "classical" approach where feature extraction is hand-engineered such as SIFT \cite{inbook}, however due to greater generalizability, automatic feature extraction and usually better performance methods using specifically trained machine learning models are generally preferred.\\ Performance in the vectorization of images is generally measured by how similar vectors are for semantically or structurally similar images. Since similarity image similarity is a key part of our vectorization we opted for the model approach utilizing the Img2Vec library \cite{patel2019img2vec}.
+
+\section{Vector dimensonality reduction}
 \label{dimRed}
-In dimensionality reduction we try to reduce the dimension of a given data points while trying to preserve certain properties and relationships between the data points, in our case we are interested in the similarity of the given data points. I utilized Umap \cite{umap} which builds a nearest neighbour graph utilizing fuzzy sets in the higher dimensional space and then tries to preserve this realtionship in lower dimensional spaces usally 2D or 3D. 
-As data pojnts we utilize the vectors we get from the previous section where we try to preserver their similarity while projecting them onto 2d space thus we are able to plot them on a simple 2d graph which is visually one of the most intuitive for humans to grasp. 
-
-\section{pixel based comparison}
-Evaluating the similarity between images is an important step in many image processing tasks such as compression, denoising, and enhancement. Traditional measures like Mean Squared Error (MSE) or Peak Signal-to-Noise Ratio (PSNR) compare images directly at the pixel level. While simple and efficient, these methods often do not reflect how humans perceive visual quality. To address this gap, more perceptually similar approaches such as the Structural Similarity Index (SSIM) \cite{ssim} have been introduced. SSIM goes beyond raw pixel differences by incorporating luminance, contrast, and structural information, which makes it better aligned with human visual perception. As a result, SSIM has become a widely used standard for assessing image quality in both research and applied settings.
+In dimensionality reduction we try to reduce the dimension of given data points while trying to preserve certain properties and relationships between them. In our case we are mainly interested in the similarity of vectorized images. Thus we utilized Umap \cite{umap} which builds a nearest neighbour graph utilizing fuzzy sets in the higher dimensional space and then tries to preserve this realtionship in lower dimensional spaces usally 2D or 3D. 
 
 
+\section{Pixel based comparison}
+\label{sec:pixComp}
+Evaluating the similarity between images is an important step in many image processing tasks such as compression, denoising, and enhancement. Traditional measures like Mean Squared Error (MSE) \cite{wang2009mse} or Peak Signal-to-Noise Ratio (PSNR) \cite{hore2010psnr} compare images directly at the pixel level. While simple and efficient, these methods often do not reflect how humans perceive visual quality. To address this gap, more perceptually similar approaches such as the Structural Similarity Index (SSIM) \cite{ssim} have been introduced. SSIM goes beyond raw pixel differences by incorporating luminance, contrast, and structural information, which makes it better aligned with human visual perception. As a result, SSIM has become a widely used standard for assessing image quality in both research and applied settings. Initially we sought to use it for displaying scatter plot selection in the grid but later we will show why this wasn't possible.
 
-LaTeX hints are provided in \cref{chap:latexhints}.
+
+
 
 %\blinddocument
 
@@ -292,7 +333,7 @@ LaTeX hints are provided in \cref{chap:latexhints}.
 This chapter gives an overview of pre-existing concepts and work related to this thesis 
 
 
-\section{Prompt Engineering and Visualization}
+\section{Prompt Engineering through Visualization}
 Mishra et al. (2023) [MSA+25] introduced PromptAid, an interactive system for prompt exploration and iteration when using large language models. Their approach aims to support inexperienced users in creating more effective prompts. Their framework contains three semi-automated strategies: keyword perturbations (replacing or varying keywords), paraphrasing perturbations (rewriting or changing phrasing), and \enquote {selecting an optimal set of in-context few-shot examples}which they aim to visualize for the user. This allows users to easily generate prompt iterations, analyze and compare the outcomes, and iteratively adjust the prompt. \\
   \begin{figure}[H]
 	\centering
@@ -317,7 +358,7 @@ Similarly for image generation models, Brade et al. (2023) \cite{brade2023prompt
   \begin{figure}[H]
  	\centering
  	\includegraphics[width=\linewidth]{promptThisInterface.png}
- 	\caption{ taken from \cite{guo2024prompthisvisualizingprocessinfluence}}
+ 	\caption{ Figure showing the promptThis user interface with a) showing their image prompt graph here we can see the history of the prompts, different images and corresponding annotations that mark what has been added or removed are shown b) shows a minimap helping the user navigate prompts and their outputs c) is a control panel  d) shows the customizations one can make during creation e) shows modifiers utilized in previous prompts taken from \cite{guo2024prompthisvisualizingprocessinfluence}}
  	\label{fig:promptThis}
  \end{figure}
  
@@ -325,7 +366,7 @@ Similarly for image generation models, Brade et al. (2023) \cite{brade2023prompt
  
  
  
- Promptcharm \cite{promptCharm} takes a hybrid user-in-the-loop framework which offers automated prompt improvement, result visualization while also allowing inpainting and showing and changing model attention of different keywords. Inpainting gives the user the ability to mark undesired areas for the model to change, adjusting the model attention influences how much weight is placed on the keyword influencing the subsequent generation. While their automated prompt improvement leverages Promptist \cite{hao2023optimizingpromptstexttoimagegeneration} helping the user achieve a more aesthetically pleasing result, while enabeling multi viewing of results with different attention.  
+ Promptcharm \cite{promptCharm} takes a hybrid user-in-the-loop framework which offers automated prompt improvement, result visualization while also allowing inpainting and showing and changing model attention of different keywords. Inpainting gives the user the ability to mark undesired areas for the model to change, adjusting the model attention influences how much weight is placed on the keyword influencing the subsequent generation. While their automated prompt improvement leverages Promptist \cite{hao2023optimizingpromptstexttoimagegeneration} helping the user achieve a more aesthetically pleasing result, while enabling multi viewing of results with different attention.  
  
  \begin{figure}[H]
  	\centering
@@ -342,7 +383,7 @@ Similarly for image generation models, Brade et al. (2023) \cite{brade2023prompt
   \begin{figure}[H]
  	\centering
  	\includegraphics[width=\linewidth]{promptMagicianInterface.png}
- 	\caption{the prompMagician user interface  taken from \cite{PromptMagician}}
+ 	\caption{the prompMagician user interface showing a) the prompt input and generation customization field b) the iamge browser displaying different images with distinct styles c)the image evaluation field evaluating a selected image based on chosen criteria d) a dfield showing local explorations by varying specific parts of the prompt  taken from \cite{PromptMagician}}
  	\label{fig:promptMagician}
  \end{figure}
  
@@ -355,54 +396,56 @@ Similarly for image generation models, Brade et al. (2023) \cite{brade2023prompt
 
 
 
-add figures for promptaid and promptthis?
-Describe relevant scientific literature related to your work.
-\section{Visualization of image data}
-With the recent rise of generative AI came a newfound need of large annotated image collections as well as the novel opportunity of creating large amounts of new never seen before images at the click of a button.\\This resulted in increased interest and need for image data visualization and classification two concepts that often go hand-in-hand as visualizing image collections effectively usually involves classifying or differentiating images in some way to achieve a useful visualization this can range from clustering them by similarity to ordering them based on content (such as perceived emotion). Researches have proposed several techniques to tackle this challenge. Such as treemaps where data is sorted categorically in rectangles, with one rectangle usually containing data of 1 specific category, the graph also allows for rectangles of 2 rectangles allowing to display a parent group, such as cars and trains with their own rectangle (classification) and a larger one containing both categorized as transportation. In some treemaps the size of the individual data points(entries in the rectangles) can vary for image data this is however usually not the case as 1 image generally isn't more important or has a larger value than another. An example of one such adaptation using semantic zooming can be found here \cite{dendromap} \cref{fig:dendroMap}.
- Another method involves displaying the data in scatter plots, a graph with elements strewn in usually a 2D or 3D  space based on some sorting criteria, most scatter plots are similar and normally only differ in the choice of elements (just dots or other symbols, do they have other stuff attached etc.) that are displayed the axis and the ability to zoom or maneuver in the graph. Whether a scatter plot is effective in visualizing data however is not only given by it's appearance, features and design but also largely depends on the underlying computation method which dictates how the data is spatially arranged. One of the most employed method for image data for this right now is dimensionality reduction \cref{dimRed} \cite{CDR,umap}.\\
- In this work we use a modified scatter plot with umap to compute the groupings, this is due to a scatter plot better representing image relations, a grid can't show how dissimilar 2 images are due to the distances being fixed while a scatter plot allows for basically arbitrary distances, as well as wanting to enable the user to get an overview over the entire image space at once, here a scatter plot fits very well for large data amounts, while he is still able to zoom and move within the scatter plot for more precise viewing. 
+
+\section{Visualizing Image Data}
+With the recent rise of generative AI came a newfound need of large annotated image collections as well as the novel opportunity of creating large amounts of new never seen before images at the click of a button.\\This resulted in increased interest and need for image data visualization and classification two concepts that often go hand-in-hand as visualizing image collections effectively usually involves classifying or differentiating images in some meaningful way. This can range from clustering them by similarity to ordering them based on content, such as perceived emotion or animal categories. However displaying results in a human coherent way is a problem that increases dramatically with growing data sizes. Researches have proposed several techniques to tackle this challenge. Such as tree maps where data is sorted categorically in rectangles, with one rectangle usually containing data of 1 specific category. The graph also allows for rectangles to contain other rectangles allowing for the display a \enquote{belongs-to} relationship, such as cars and trains with their respective rectangle being encompased by the rectangle for transportation. In some treemaps the size of the individual data points(entries in the rectangles) can vary for image data this is however usually not the case as one image generally isn't more important or has a larger value than another. An example of a tree-map adaptation for images that uses semantic zooming can be found here \cite{dendromap} \cref{fig:dendroMap}.
+ Other methods involves displaying the data in scatter plots, a graph with elements strewn in usually a 2D or 3D  space based on some sorting criteria, most scatter plots are similar and normally only differ in the choice of elements (just dots or other symbols, do they have other stuff attached etc.) that are displayed the axis and the ability to zoom or maneuver in the graph. Whether a scatter plot is effective in visualizing data however is not only given by it's appearance, features and design but also largely depends on the underlying computation method which dictates how the data is spatially arranged. One of the most employed method for image data for this right now is dimensionality reduction \cref{dimRed} \cite{CDR,umap}.\\
+ In this work we use a modified scatter plot with UMAP to compute the groupings, this is due to a scatter plot better representing image relations, a grid can't show how dissimilar 2 images are due to the distances being fixed while a scatter plot allows for basically arbitrary distances, as well as wanting to enable the user to get an overview over the entire image space at once, here a scatter plot fits very well for large data amounts, while he is still able to zoom and move within the scatter plot for more precise viewing. 
 
   \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{dendroMap.png}
-	\caption{example of a word cloud about the US-presidential election 2008  taken from \cite{wordclouds}}
+	\caption{example of a tree map adapted for displaying images we can see the different rectangles containing images (these images were chosen to represent a lost more images as indicated by the number at the top left of each rectangle) of e.g. cats and birds while being encompassed by a greater rectangle for the category of animals taken from \cite{wordclouds}}
 	\label{fig:dendroMap}
 \end{figure}
 
 
 
 
-\section{Visualization of large data sets and high dimensional data}
-In order to visualize large data sets graphs usually are the go to approach however some things are harder to plot than others, while it might be easy to plot a quarterly profits report plotting high dimensional data like text, videos or images is a different challenge especially when wanting to plot them relative to each other. In our case plotting images based on their similarity, this is challenging due to a lot of traditional measures to determine the similarity of images returning a single number (depending on the implementation usually the closer that number to 0 the similar the images), additionally the similarity is usually measured between 2 images then for larger data sets with possibly hundreds of images we'd have to chose 1 starting image from the data set and compare it all the others to gain our similarity score. This has some potential issues 1. it might not give an accurate representation of the images towards each other when plotted (2 very different images could end up with a very similar difference score to the chosen starting image) making such a measure potentially ineffective for visualizing data. 2. This makes plotting the data in a meaningful way hard as viewing the data on a 1D number line doesn't utilize the full screen space and observes have a harder time to view and relate all the data (as they have to pan from left to right having a larger distance between data points). Also plotting the data in a raster where we go from left to right in descending similarity wouldn't properly quantifying how similar images are  (2 images that are very similar to each other could be next to an image very dissimilar from these first 2), losing that entire dimension of the data in the visualization. \\
-Thus research has been done to be able to preserve the similarity relationship while utilizing 2 or 3 dimensions with the first major breakthrough in that direction being t-SNE \cite{van2008visualizing}.
+\section{Visualization of Large Data Sets of High Dimensional Data}
+\label{sec:HighData}
+Visualizing large datasets is often best accomplished with graphs, but some data types present more of a challenge than others. While plotting a quarterly profits report is straightforward, plotting high-dimensional data like text or images is difficult. This is especially true when the goal is to show how data points relate to one another.
 
-t-Distributed Stochastic Neighbor Embedding \cite{van2008visualizing} is a
-nonlinear dimensionality reduction technique that has been widely adopted for
-visualizing high-dimensional data. The method models pairwise similarities between
-points in both the original space and the low-dimensional embedding as probability
-distributions, and seeks to minimize their divergence. The cost function is given by
+In our case, we want to plot images based on their similarity. This is challenging for two main reasons. First, traditional image similarity measures often return a single numerical score (where a value closer to zero typically indicates higher similarity). Second, this score is usually calculated between just two images. For a larger dataset, this means selecting a single starting image and comparing all others to it. This approach has significant drawbacks:
+
+\begin{enumerate}
+	\item \textbf{Inaccurate Representation:} It may not accurately represent the relationships between all images. Two very different images could end up with a similar score to the chosen starting image, making the measure ineffective for visualization.
+	
+	\item \textbf{Poor Use of Space:} Plotting the data on a one-dimensional number line fails to utilize the available screen space. It also forces observers to pan horizontally, making it difficult to view and relate all the data points at once. Furthermore, a simple raster display from left to right in descending similarity fails to capture the full picture---two very similar images could be placed next to a third that is completely dissimilar, losing the multi-dimensional relationships in the data.
+\end{enumerate}
+
+To solve this, research has focused on techniques that preserve these complex similarity relationships while projecting the data into two or three dimensions. A major breakthrough in this area was t-SNE \cite{van2008visualizing}.
+
+t-Distributed Stochastic Neighbor Embedding (t-SNE) \cite{van2008visualizing} is a nonlinear dimensionality reduction technique widely adopted for visualizing high-dimensional data. The method models pairwise similarities in both the original high-dimensional space and the low-dimensional embedding as probability distributions, seeking to minimize the divergence between them using a cost function based on Kullback-Leibler divergence:
 \begin{equation}
 	C = KL(P \,\|\, Q) = \sum_i \sum_j p_{ij} \log \frac{p_{ij}}{q_{ij}},
 \end{equation}
-where $P$ represents similarities in the high-dimensional space and $Q$ those in
-the embedding. This approach effectively preserves local neighborhood structure.
-However due to its high 
-computational cost and limited scalability.
-Uniform Manifold Approximation and Projection (UMAP) has been proposed as an
-alternative that retains the benefits of t-SNE while offering improved speed and
-better preservation of global structure. Making it the prefered choice for larger data sets.
+where $P$ represents similarities in the high-dimensional space and $Q$ those in the embedding. This approach excels at preserving local neighborhood structure. However, its high computational cost and limited scalability led to the development of alternatives.
+
+Uniform Manifold Approximation and Projection (UMAP) retains the benefits of t-SNE while offering improved speed and better preservation of the data's global structure, making it the preferred choice for larger datasets.\\
+Which is also why we utilized it in this work to reduce dimensionality of our image embeddings.
 
 
-\section{visualization of text content}
+\section{Visualization of Text Content}
 Visualizing text content is a complex problem with a multitude of approaches depending on several factors like content size, type and desired result/visualization.\\
 Analyzing the most important topics of a document collection with a temporal aspect (showing which topics used to be relevant and which topics are relevant now, in a (over time)changing document collection such as presidential speeches) here one might utilize word clouds where word size and ordering play an important role see \cref{fig:wordClouds}  \cite{wordclouds}  different approach than visualizing a large corpus of scientific papers via an interactive interface with several components including a semantic link graph and a content summary section see \cref{fig:scientificPaperVisualization}\cite{visualizingPaperCollections}. Yet another approach for text documents and sentences is a word tree \cref{fig:wordTree} where words and unique sentence parts are displayed in a tree giving an overview of where and in what context certain words occur these however can get rather large for longer texts or documents \cite{wordTree}. Again others aim to visualize the core content of a social media text collection introducing other challenges and possibilities due to the data being mostly short and unstructured. This allows for a \enquote{variation} of a word tree that utilizes a more lose but still relevant ordering while filtering out more words deemed not relevant enough and displaying more important (usually more often occurring) words larger \cref{fig:sentenTree} \cite{sentenTree}.\\ 
-Inspired by the last two approaches we present a variation of a word tree for prompts in form of a dag with the goal of preserving sentence structure for easy similarity assessment while aggregating words and sentence sections as much as possible for a more manageable visual analysis.
+Inspired by the last two approaches we present a variation of a word tree for prompts in form of a DAG with the goal of preserving sentence structure for easy similarity assessment while aggregating words and sentence sections as much as possible for a more manageable visual analysis.
 
 
   \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{wordCloud.png}
-	\caption{example of a word cloud about the US-presidential election 2008  taken from \cite{wordclouds}}
+	\caption{example of a word cloud about the US-presidential election 2008, we can see more relevant node being bigger, and that the words are loosely sorted by semantics, additionally some nodes are colored representing different statues of the nodes.   taken from \cite{wordclouds}}
 	\label{fig:wordClouds}
 \end{figure}
 \begin{figure}[H]
@@ -421,32 +464,158 @@ Inspired by the last two approaches we present a variation of a word tree for pr
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{sentenTree.png}
-	\caption{example of a sentenTree about social media posts containing yelp and eat24 taken from   \cite{sentenTree}}
+	\caption{example of a sentenTree about social media posts containing yelp and eat24, larger nodes are more relevant and some structure is give through edges taken from   \cite{sentenTree}}
 	\label{fig:sentenTree}
 \end{figure}
-\section{Concept Drift in Generative models}
-So concept drift = the phenomenon where AI models shift between different conceptual interpretations/outputs based on prompt variations, and your tool is designed to visualize and analyze these shifts systematically.
 
-
-Traditionally, concept drift in machine learning refers to a change in the mapping between input data and output labels over time. A model is trained on a particular data distribution, but as the relationship between data features and model classification shifts, its predictions become less reliable. For example, a spam email detector trained on data from five years ago may struggle today because spammers use new patterns and tactics that the model never learned, causing it to missclassify more modern spam.\\
-In this thesis concept drift refers to the changing the intent of the user while prompting the image generation model. Where in a normal use case it is likely that the prompt will be adjusted altered modified and specified many times in order to achieve the desired end result. This work aims to visualize that process and easy narrowing in on a desired prompt by providing an overview between the image and the prompt space hopefully allowing the user to identify what parts of the image changes based on the changes in the prompt.
-
-
-
-where a model has been trained under a certain data set (the training data), but the data it is now applied on has shifted from the training data set, making the model less effective 
 \chapter{Approach}
-This work aims to highlight the relationship between prompt and generated image in order for the user to better understand how changes in the prompt affect the generated images. \\
-A major challenge is visualizing the connection between the prompt and the image especially for many the prompt image pairs that are normally created during the creative process when utilizing an image generation model.\\
-For this an interactive approach is chosen  between a visualization of the images and the prompts.\\ Research led to chose a 2D scatter plot for images where circles with the individual image inside are vectorized and  displayed based on their similarity determined by U-map. To display the prompts and allow their easy readability and association with its corresponding prompt a sideways dag-tree was chosen where nodes are computed via the following steps 1. clean up the prompt, removing all special characters numbers and remove articles, pronouns, Auxiliary verbs and some prepositions (of, to, and, or, for) aswell as (with, without, from, by, as) while keeping others (in, at, on) that are deemed to be semantically significant for the image generation. 2. The initial nodes are formed consisting of the word and the position at which it occurs we only look at unique word positions words that appeared already are disregarded though their relationships (parent-child) are recorded, additionally we save whether the word has a child or whether any prompt ends with the word position pair. 3. We merge nodes that only have 1 child and which no prompt ends with. 4. collapse adjacent nodes with same entries 5. Last a couple sweeps with the barycenter heuristic to reduce edge crossings giving the graph a clearer look.\\
+
+\section{Overview}
+
+We present Prompt Vision, a visual-interactive system for exploring concept drift in text-to-image generation. Our approach combines automated prompt variation with dual interactive visualizations to help users systematically understand how prompt modifications affect generated outputs.
+
+The system consists of three main components:
+\begin{enumerate}
+	\item \textbf{LLM-based prompt generation:} Automatically generates semantically related prompt variations based on user specifications
+	\item \textbf{Dual visualization:} A scatter plot ordered on similarity and a DAG displaying prompt structure
+	\item \textbf{Interactive exploration:} Linked views enabling users to trace relationships between prompts and images
+\end{enumerate}
+
+\ref{fig:system-overview} shows the overall workflow.
+
+\section{Design Goals}
+
+Based on the challenges identified in Section~\ref{sec:introduction}, we established the following design goals to guide our system design:
+
+\textbf{1. Support Large-Scale Exploration}
+
+\textit{Motivation:} Understanding concept drift requires exploring a large prompt-image space with varied concepts and content. Purely manual prompt crafting would be too slow and tedious to identifying systematic patterns.
+
+\textit{Goal:} Enable generation and visualization of 400+ prompt-image pairs to facilitate comprehensive exploration of the prompt-image space.
+
+\textit{Design impact:} This goal drove our decision to use automated LLM-based prompt generation rather than manual entry, and lead to the necessity of scale-able visualization techniques.
+
+\textbf{2. Allow Dual-Exploration of Prompt-Image Space}
+
+\textit{Motivation:} In order to understand prompt-image relations the user needs to be able to quickly identify what prompts belong to which images and vice versa.
+
+\textit{Goal:} Create an easy to use and quickly to understand and most importantly linked visualization of prompt space and image space.
+
+\textit{Design impact:} This goal led to the decision of using 2 separate graphs for prompt and image space, with methods of mapping to the other. 
+
+
+\textbf{3. Balance Automation and User Control}
+
+\textit{Motivation:} Fully automated systems remove user agency, while fully manual systems are labor-intensive. Users need to guide exploration while being able to automate labor intensive tasks to speed up exploration.
+
+\textit{Goal:} Automate prompt variation generation while preserving user ability to manually add prompts.
+
+\textit{Design impact:} This goal led to a hybrid approach where users specify what to vary (which words, how many alternatives) also enabling them to choose no modifications.
+
+\textbf{4. Support Iterative Refinement}
+
+\textit{Motivation:} When trying to understand concept drift, being able to iteratively add data points is crucial, this allows the user to discover and confirm patterns as well as trying out newly discovered concepts, which then can be viewed in the greater prompt-image space.
+
+\textit{Goal:} Enable users to add new prompts based on observations and integrate them into existing visualizations.
+
+\textit{Design impact:} This led to the decision to allow incremental prompt addition and dynamic visualization updates.
+
+\section{Design Rationale}
+\label{sec:design}
+ \subsection{LLM-based Variation Generation} 
+ We decided to use an LLM to generate the prompt alternatives, due to it being easy to use an integrate especially with JSON formated output. And it provides a crucial stochastic element when varying the prompts (variations aren't always the same due to stochastic nature of the model) while maintaining semantically fitting alternatives. Which is important for meaningful prompt-image space exploration.
+\subsection{prompt engineering choices}
+  In the prompt building we employed prompt engineering techniques namely in-context learning to improve the LLMs accuracy and performance and Structured output prompting. The later allows us to directly use the LLM response without further code to handle potential hallucination or formatting issues in post processing \cite{LLMoutputconstraints}, eliminating one avenue of errors or inaccuracy that might be introduced through that. 
+\subsection{Dual Visualization}
+We chose the dual visualization approach due to needing to visualize both prompt and image space together for a fast cognitively easy and large overview of the prompt-image space, which is why we chose a graph for each. Both graphs fit on one screen for an easy overview. 
+\subsection{Grid}
+We chose to extend the scatter plot with a grid due to the scatter plot images being somewhat small and partly overlapping. Which can extend to fully overlapping for large image collections. Making viewing the images without the grid almost impossible.
+\subsection{Text-DAG}
+For the prompt space we chose a text-DAG that is built in the following way: 
+\begin{enumerate}
+	\item \textbf{Clean the prompt} by removing all special characters, numbers, articles, pronouns, auxiliary verbs, and select prepositions (\textit{of, to, and, or, for, with, without, from, by, as}) while retaining words deemed to contribute to structure (\textit{in, at, on}) of generated image. We decided that due to the finding that function words and punctuation contribute minimally to model output from\cite{liu2022design}.
+	
+	\item \textbf{Form initial nodes} by iterating over each word in each prompt. We save position+word as unique node id, as well as the words layer, the word, it's direct relatives,whether the prompt ends after and all the other unique ids of the nodes of the other words in the current prompt (positions will correlate with the vertical layers but are changed for some node in case of collapse). We allow for only one node per word-position pair. For repeated word-position pairs we save their data to the corresponding node. 
+	
+	\item \textbf{Merge nodes} that have only one child and the node has no word-position pair that ended in their prompt, it is crucial to merge node data for scatter plot identification.
+	
+	\item \textbf{Collapse adjacent nodes} that contain identical entries if one of the nodes doesn't have a relative in the layer of the other, on collapse we need to make sure the node data is aggregated (we don't want to lose information this is especially important since we want to match all scatter plot elements to their corresponding nodes).
+	
+	\item \textbf{Apply multiple sweeps} of the barycenter heuristic which reduces edge crossings in graphs, resulting in a clearer graph layout.
+\end{enumerate}
+We chose this way to maintain as much of the prompt structure as possible while greatly aggregation similar prompts, making it easy for the user to identify the original prompts while presenting a spatially smaller cognitively easier to handle prompt representation. Additionally the DAG has a select and hover functionality: we display selected and hovered nodes red (for the same reason as in the scatter plot selection see \cref{sec:scatter}), when hovering over a node show all the nodes representing relatives of the selected and hovered node, this allows for reconstruction of the original prompt data from the DAG \cref{fig:dagPath}.  
+
+
+\section{Embeddings and UMAP}
+To meaningfully represent the images in a graph we needed a way to group or sort them which is a non trivial task as touched upon in \cref{sec:HighData}, we decided to sort the images based on similarity (the more similar the closer), as humans associate proximity with belonging together, creating a nice intuitive grouping. To achieve we needed a way to compare images, we decided to \enquote{vectorize} \cref{sec:vecImg} them for this we chose Img2Vec, as a state-of-the-art way to compute image embeddings (vectors), we also chose UMAP over t-SNE, to reduce the datas dimensions to 2D, as it better preserves local and global structures while being more compute efficient..
+\section{scatter plot}
+\label{sec:scatter}
+We chose a 2D scatter plot to represent our dimensionally reduced embeddings as it is the graph most fitting to represent similarity based on distance, as well as aforementioned intuitively to understand due to the association of proximity and similarity. The graphs is 2D and corresponding as it is the most easy to view and grasp for our purposes as a 1D graph would be far to crowded due to having only 1 dimension to display data. While a 3D (and higher) graph would add complexity and effort when trying to effectively view the data.\\
+Initially we only had circles representing the data but for quicker viewing we chose to represent the data points as circles displaying their corresponding image. We added color changing borders to them based on whether they are selected (red) or not (blue) allowing for an easy visual distinction between the two, while drawing attention to the selected ones as red is the highest-salience color (the color humans notice first/the most). To ease viewing of individual images we also introduced a zooming and panning feature
+\section{Graph Interactions}
+In order to understand prompt-image relations we needed a way for the user to map the prompts to the corresponding images and vice versa. To achieve this we we computed the unique ids (uids) as they are saved for each node in the DAG for the scatter plot (for each image we tokenize the prompt and save a set of word+positions to the image data), this now allows for mapping between the tow.\\
+For the scatter plot we chose a size adjustable lens in combination with the aforementioned grid to select images, this allows for an easy and intuitive selection for the user. In the DAG we display all the nodes that are completely contained within the uids of at least of the selected images. This way we show all and only nodes corresponding to one the prompts of the images.\\ In contrast to map from the DAG to the scatter plot we chose a restrictive mapping: when hovering over a node in the DAG the uids of the displayed images need to contain all the uids of the hovered and selected nodes. This ensures that only images whose prompts contain all the words in the DAG selection are displayed.\\ This is an intuitive way to map the data as we show all the prompts responsible for the selected images as well as only the images related to (their prompts contain all the to the nodes corresponding words)the hovered nodes in the DAG. Henceforth the user is allowed and easy overview of corresponding prompt-image pairs. \cref{fig:scatterDagSelection,fig:dagScatterSelection,fig:graphInteraction}
+\section{System Components}
+\subsection{Prompting Help}
+To assist the user in finding prompts quickly, the interface has a simple prompting tool, where the user can enter a prompt select which parts he'd like to vary (this is done via right-click to easy editing prompt as editing in a word would become impossible) as well as how many variations and how long they should be, then he can select whether he'd like to append or prepend something to the prompt as well whether he'd like to \enquote{mix} all the options (vary every variation option which each other instantly giving a large prompt image space). Then after the user selection and confirmation we build a prompt see \autoref{sec:prompts} with the given inputs where we  LLM called is GPT-5 the newest and most powerful model in the GPT series.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{promptInput2.png}
+	\caption{prompt suggestion interface, with A: input area where one can rightclick to toggle the words to vary B: prompt suggestion customization options where one can select how many alternatives and how long they should be, C:history of last used prompts}
+	\label{fig:promptInput}
+\end{figure}
 
 
 
+\subsection{Scatter Plot}
+The scatter plot is implemented as a d3 svg, it displays the reduced image embeddings in a 2D space, in addition the the embedded data each data point has a path to their image and a set of uids. We display data points using small circular image thumbnails additionally the circles have blue colored borders when not selected and red ones when selected, to select a lens is used and a grid that displays the selected images sorted after similarity. When a DAG selection is made corresponding images are circled red while all other images are made less opaque. When hovering over a node the image aswell as the corresponding prompt displays in a popup window. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterplotRawDots.png}
+	\caption{Scatter Plot of 100 example images being plotted based on similarity }
+	\label{fig:scatterDots}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterplotRawHovered.png}
+	\caption{ScatterPlot with node hovered displaying pop up windows with image and prompt}
+	\label{fig:scatterHovered}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{scatterplotImages.png}
+	\caption{ScatterPlot with images as data indicators we can see the dots have been replace with blue outlined image circles  }
+	\label{fig:scatterImages}
+\end{figure}
 
-\section{dag}
-In the following the dag progression for different steps will be shown to visualize the changes. In order for them to be easier to follow only 5 prompts have been chosen. We see that initially relations between the prompts are hard to glean, even with only 5 prompts comparing the text and identifying the similarities and difference is quite a chore for the human visual complex. Removing stop and function words makes it a little easier due to the text content decreasing however it's still hard and will only exponentially increase in difficulty when adding more prompts (imagine trying to compare 50 or 100 prompts "by hand").\\
+
+\subsubsection{Image Grid}
+\label{sec: grid}
+The grid displays images selected in the scatter plot, to provide a quick and comprehensive overview of the selected images we needed to sort the images based on similarity.
+At first we wanted to use a pixel based comparison methods \cref{sec:pixComp} such as SSIM, however SSIM or similar methods are computationally somewhat expensive to service a live application given the current limitations of science and technology.  Therefore displaying the grid with a pixel based similarity measure only works live if similarity values are pre-computed.
+Due to these limitations we looked for another method, realizing that we already had a geometric ordering of the image data thanks to UMAP we reused the already existing values, by ordering the data in the lens selection geometrically, displaying images hierarchical from top-to-bottom-left-to-right \cref{fig:scatterGeometric}, achieving arguably better results with response times suitable for a live application.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{gridNoSSIM.png}
+	\caption{ScatterPlot with Lens selection displaying selected images in grid unsorted}
+	\label{fig:scatterNoSSIM}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{gridSSIM.png}
+	\caption{ScatterPlot with Lens selection displaying selected images in grid sorted with SSIM, grid displays arguably a coherent sorting with some images appearing out of space}
+	\label{fig:scatterSSIM}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{gridGeometric.png}
+	\caption{ScatterPlot with Lens selection displaying selected images in grid with geometric sorting, the grid displays coherent image similarity from top to bottom}
+	\label{fig:scatterGeometric}
+\end{figure}
+\subsection{Directed Acyclic Graph}
+In the following the DAG progression for different steps will be shown to visualize the changes. In order for them to be easier to follow only 5 prompts have been chosen. We see that initially relations between the prompts are hard to glean, even with only 5 prompts comparing the text and identifying the similarities and difference is quite a chore for the human visual complex. Removing stop and function words makes it a little easier due to the text content decreasing however it's still hard and will only exponentially increase in difficulty when adding more prompts (imagine trying to compare 50 or 100 prompts "by hand").\\
 Just by aggregating words at the same position and indicating their relation via edges we can already see noticeable improvements, these are further pronounced when collapsing nodes containing "phrase words", words that appear at their position only next to one relative.\\
-However with only this overview we have lost the crucial information of what nodes belong together with multiple new sentences being possible when just following the graph structure, when an edge aggregation is followed by an edge split. To remedy this a select-and-hover function is introduced where we can select nodes then when hovering a node all the selected and hovered nodes relatives from the original data are shown. This allows for an easier overview and and comparability of the nodes, this approach can scale quite well if prompts are sufficiently similar (if all prompts would differ at every position we'd just have a prompt list again).
-
+Overall the DAG displays words following a horizontal order. It is meant to be read left to right if nodes have a link that means at least one prompt in the original data contained that word pairing in that order. The difference vertical layers correspond to the position of the word in the original prompt. A user is able to select and hover over nodes (which will display red)\cref{fig:dagPath} in the DAG, when hovering over a node the DAG displays all nodes that are relatives of the selected and hovered node, here relatives are independent of the graph structure they instead refer to relatives in the original prompt data (words that occurred in the same prompt). This selection will also trigger the display of all nodes in the DAG that correspond to prompts containing all the words in the selection.
 \begin{figure}[H]        % 'h' = place here (optional)
 	\centering           % centers the image
 	\includegraphics[width=\linewidth]{DAGNothingApplied2.png}
@@ -474,103 +643,89 @@ However with only this overview we have lost the crucial information of what nod
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth, trim=4cm 1cm 4cm 1cm, clip]{DAGPathSelected.png}
-	\caption{Node selected showing the path (ancestors,descendants) of the node relative to the original input data}
-	\label{dagPath}
-\end{figure}
-
-\section{scatterplot}
-To represent the images a scatterplot was chosen, this was due to 2D representation providing the best overview and being easily understood, while it also helps that humans associate visual closeness with belonging together or to a grouping making the distance between the points being given by similarity being very effective with similar images having a close proximity for an easy overview. Initially the scatter plot only contained dots representing the respective images with a hover functionality displaying the image and prompt. This however didn't give an initial overview over the entire graph which is why instead of just dots the images themselves as small circles were plotted providing the user with a good initial overview over the data. Furthermore zooming and panning is implemented to ease use of the scatterplot and allow the user more control of what he sees and focuses on.
-\\Additionally a lens for image selection is introduced the lens can be varied in size allowing for larger or more precise selections, the selection is then highlighted and displayed in a grid next to a cursor. Ideally the images would be ordered based on similarity using for example SSIM as was the case in this work however for live interaction (the user sliding the lens over the scatterplot) SSIM or similar methods are with the current limitations of science and technology to slow, therefore the grid update sorted with a pixel based similarity measure only works in the live application for pre-computed values, which is in contrast to the goal of being able to change the prompt and generate images on the fly then adding the results to the framework immediately.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{scatterplotRawDots.png}
-	\caption{ScatterPlot of 100 example iamges being plotted based on similarity }
-	\label{fig:scatterDots}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{scatterplotRawHovered.png}
-	\caption{ScatterPlot with node hovered (unfortunately cursor doesn't show up in screenshot) }
-	\label{fig:scatterHovered}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{scatterplotImages.png}
-	\caption{ScatterPlot with images as data indicators  }
-	\label{fig:scatterImages}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{gridNoSSIM.png}
-	\caption{ScatterPlot with Lens selection displaying grid unsorted }
-	\label{fig:scatterNoSSIM}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{gridSSIM.png}
-	\caption{ScatterPlot with Lens selection displaying grid sorted with SSIM}
-	\label{fig:scatterSSIM}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{gridGeometric.png}
-	\caption{ScatterPlot with Lens selection displaying grid with geometirc sorting}
-	\label{fig:scatterGeometric}
-\end{figure}
-
-
-\section{prompting help}
-To assist the user in finding prompts quickly, the interface has a simple prompting tool, where the user can enter a prompt select which parts he'd like to vary aswell as how many variations and how long they should be, then he can select whether he'd like to append or prepend something to the prompt as well whether he'd like to \enquote{mix} all the options (vary every variation option which each other instantly giving a large prompt image space). Then after the user selection and confirmation we build a prompt see \autoref{sec:prompts} with the given inputs where we  LLM called is GPT-5 the newest and most powerful model in the GPT series. In the prompt building we employed prompt engineering techniques namely in-context learning to improve the LLMs accuracy and performance and Structured output prompting in order to be able to be able to send the response to the image generation model directly without further code to handle potential hallucination or formatting issues in post processing \cite{LLMoutputconstraints}, eliminating one avenue of errors or inaccuracy that might be introduced through that. 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{promptInput2.png}
-	\caption{prompt suggestion interface, with A: input area where one can rightclick to toggle the words to vary B: prompt suggestion customization options where one can select how many alternatives and how long they should be, C:history of last used prompts}
-	\label{fig:promptInput}
+	\caption{Node selected showing the path (ancestors,descendants) of the selected nodes relative to the original prompt input data}
+	\label{fig:dagPath}
 \end{figure}
 
 
 
 
 
-\section{graph interaction}
-A major challenge when trying to visualize results of generative ai in a analytical way is mapping them to their input, this work aims to solve this problem by creating graphs for both and enabling graph interactions in order to map a selection in one graph to the corresponding data in the other, as well as adding a grid displaying selected images for easier viewing increasing the image size relative to the scatter plot elements additionally remedying the issue that with large similar image spaces the images start to significantly overlap thus making the grid necessary for viewing the hidden images.\\
-To map from the scatter plot to the dag we chose a lens selection for the images, images selected by the lens are 1.portrait in the grid as aforementioned as and are also mapped to their corresponding words in the dag, by highlighting them while graying out the non related words allowing for a quick visual assessment by the user \cref{fig:scatterDagSelection}.\\
-For the complementary selection from dag to scatter plot we chose a simple hover approach, when hovering over a node in the dag that node and all the corresponding elements in the scatter plot are highlighted red while non related elements in both graphs are grayed out \cref{fig:dagScatterSelection}. This again allows for an easy visual mapping of corresponding elements by the user due to color relationship and highlighting as well as graying out relevant and non relevant elements. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{figure}[H]        % 'h' = place here (optional)
+	\centering           % centers the image
+	\includegraphics[width=\linewidth]{generalOverview.png}
+	\caption{Figure showing a general overview of the system components and their procedural order, beginning with the  prompt input interface, followed by the LLM generating prompt variations then the Image generation models next the embeddings are computed for the images through Img2Vec and UMAP. Then the embeddings with the images  and prompts are sent to the visualization layer, where the scatter plot displays the images positioned based on their embeddings and the DAG the aggregated prompt data}
+	\label{fig:system-overview}  % optional: for referencing
+\end{figure}
+
+
+\begin{figure}[H]        % 'h' = place here (optional)
+	\centering           % centers the image
+	\includegraphics[width=\linewidth]{overview.png}
+	\caption{Figure showing the general workflow of the framework, the user is able to interact with the DAG and scatter plot, they can also utilize the image generation pipeline where they first enter their initial prompt into the Prompt Input field and then select how they want to modify the prompt, this is then passed onto the backend which automatically generates a prompt for the LLM, the LLM outputs new prompts based on the user specifications which are then generated and finally passed onto the DAG and scatter plot for display}
+	\label{fig:workflow-overview}  % optional: for referencing
+\end{figure}
+
+
+
+
+
+
+
+
+
+
 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{graphInteraction1.png}
-	\caption{graph showcasing the interaction between dag and scatter plot}
+	\caption{graph showcasing the general interactions between DAG and scatter plot, we can see that a scatter plot selection is sent to the EventBus (a d3 element), who then triggers the grid display and the mapping to the corresponding DAG elements, this works vice versa for a DAG selection expect the grid is not involved}
 	\label{fig:graphInteraction}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{scatterDagSelection.png}
-	\caption{figure showing selection in scatter plot with matching data in dag}
+	\caption{figure showing a lens selection in the scatter plot with matching data in DAG, showing us that we only selected images corresponding to prompts containing the word tiger and but not apple}
 	\label{fig:scatterDagSelection}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{dagScatterSelection.png}
-	\caption{figure showing selection in dag with matching data in scatter plot}
+	\caption{figure showing selection of the word sitting in the DAG and the matching data in the scatter plot}
 	\label{fig:dagScatterSelection}
 \end{figure}
-
-\chapter{implementation}
+\section{System Workflow}
+The workflow begins with the user entering a prompt in the Prompting Help text-field they then selects the words they want to modify by right-clicking them. Next he selects how many variations they'd like and how long they should be, as well as if they want to prepend or append something to the prompt and if yes the length. Lastly they select whether they'd like only as many prompts as they selected variations or the Cartesian product of all variations (mix all variations with each other). They then wait for the creating of the images and subsequent display in DAG and scatter plot. They then explore the prompt-image relationships in DAG and scatter plot. Finally they can iteratively repeat the whole process creating a larger more informative prompt-image space. \cref{fig:system-overview}
+\section{Implementation Details}
 To realize the chosen design a web application utilizing d3 was implemented
-\section{d3}
+\subsection{d3}
 D3.js (Data-Driven Documents) is a JavaScript library for creating interactive and dynamic data visualizations in web environments. Unlike traditional libraries that provide fixed templates and charts, D3 gives developers fine-grained control over how data is bound to the graphical elements. It utilizes web standards such as HTML, SVG, and CSS, enabling flexible and highly customizable visualizations.
 
-The key strength of D3 is its declarative data binding: datasets can directly drive the creation, transformation, and styling of visual elements. This makes it possible to build anything from simple bar charts to complex, interactive dashboards or exploratory visual analytics systems. Because of this versatility, D3 has become one of the mostcommonly used tools for web-based data visualization in both research and industry.
+The key strength of D3 is its declarative data binding: datasets can directly drive the creation, transformation, and styling of visual elements. This makes it possible to build anything from simple bar charts to complex, interactive dashboards or exploratory visual analytics systems. Because of this versatility, D3 has become one of the most commonly used tools for web-based data visualization in both research and industry.
 
-\section{general framework}
-For the general framework a web-application was chosen utilizing html, JS and css for the frontend and python for the backend.
-This allows for fast light weight prototyping and easy adpatability. For the generative tasks we used as api call to an image generation model we used a stable diffusion model \cite{stableDiffusion} in this work.
+\subsection{general framework}
+For the general framework of the web-application html, Java Script and Cascading Style Sheets was utilized for the frontend and python for the backend.
+This allows for fast light weight prototyping and easy adaptability. For the generative tasks we used as api call to GPT-5 a LLM and for the image generation task we used a stable diffusion model \cite{stableDiffusion}.
                                                                         
-This 
+
 \chapter{use case example}
 A user wants to create an image using generative AI for a presentation. However, they are frustrated, during their last generation session, they had to adjust their prompt dozens of times before achieving a satisfactory result. Seeking a more efficient approach, they turn to prompt vision to gain better insight into how prompt modifications affect generated outputs, hoping to reduce time and iterations in future image creation tasks.\\
 First the user selects a model \footnote{Model selection is not implemented in the prototype} and enters a prompt in the dedicated field. They really like animals and come up with a scenario for an elephant as well as a quality tag they remember from last time \enquote{A photo of an elephant munching on a stack of hay in a barn, extremely high quality}. They select which words to vary and specify the desired length for alternatives \cref{fig:usecasePrompt1}. Next they choose to let the LLM mix all alternatives with each other curious to explore the different variations. While waiting on the tool response they decide to take a coffee break. 
@@ -591,40 +746,35 @@ Wanting to experiment with another style they repeat the process with a slightly
 \begin{figure}[H]
 		\centering
 	\includegraphics[width=\linewidth]{usecaseQualityDag.png}
-	\caption{Figure showing an example selection in the DAG and the corresponding images in the scatter plot, both highlighted red}
+	\caption{Figure showing an example selection in the DAG, cow and realistic have been selected while image is being hovered, the corresponding images in the scatter plot show cows while non selected images are made less opaque, selected images are highlighted red}
 	\label{fig:usecaseQualityDag}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{usecaseQualityScatter.png}
-	\caption{Figure showing a lens selection in the scatter plot, the grid displaying the corresponding images in large without overlay and the dag showing the corresponding prompt paths}
+	\caption{Figure showing a lens selection of black and white elephant images in the scatter plot, the grid is displaying the corresponding images in large without overlay and the DAG is showing the corresponding prompt paths}
 	\label{fig:usecaseQualityScatter}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{usecaseQualityPaintingDagZoom.png}
-	\caption{Figure showing the selection of \enquote{oil painting} in the dag while being zoomed in on the images}
+	\caption{Figure showing the selection of \enquote{oil painting} in the DAG while being zoomed in on the images, we see that most images have less defined lines more saturated colors and painting like qualities }
 	\label{fig:usecaseQualityPaintingDagZoom}
 \end{figure}
 
 
-\chapter{conclusion}
+
 \chapter{discussion}
 \label{chap:zusfas}
-With the approach of visualizing large image-prompt spaces and their relationship in 2 separate interactive graphs, we allow the user to quickly gain an overview over the prompt-image space through interaction with both graphs, as well as adding new prompt-image pairs after making an observation. This enables them to identify how changes in the prompt affect the generated output. From this the user can generalize to the models behavior, struggles with complex poses like sitting, drawing sometimes black and white, background always accurate etc.. The tool is quick and easy to learn however the user needs to make their own observations.\\
-Both image data and DAG data need to be sufficiently similar, otherwise this approach would struggle with effectively visualizing the data space. The DAG would be branching to far and growing too large due to aggregation being scarcely possible if the words are too different and the scatter plot would be scattered displaying a bunch of individual dissimilar points with insufficient clustering or similarity sorting.\\
-For a large image space (>1000) the tool struggles with long response time from the image generation model, and with older hardware significant lag in d3s zooming and pan behavior. The scatter plot becomes quite growded making the lens selection and grid necessary to identify otherwise over layered images.\\
-Compared to other works like \cite{PromptMagician}, we focus solely on a comparatively large prompt-image space, lacking options to customize model hyper parameters and model attention. This makes the tool initially easier to use but allows for less possibilities.
 
-
-Our approach, which visualizes the prompt-image space through two linked interactive graphs, enables users to efficiently explore the relationships between text prompts and their corresponding generated images. By interacting with both the scatter plot and the directed text-DAG, and iteratively as well as adding new prompt-image pairs based on their observations, users can quickly identify how specific prompt modifications influence the visual output. This process facilitates the generalization of the model's underlying behavior, allowing users to deduce its common tendencies such as a struggle with complex poses (e.g., "munching"), a tendency to generate in multiple styles given certain modifiers (e.g. black-and-white as well as color images for "drawing"), and a consistent accuracy in rendering backgrounds. These insights have practical value for prompt engineering especially for novice users. Understanding which prompt components reliably affect outputs versus which produce inconsistent results allows users to craft more effective prompts with fewer iterations. Rather than trial-and-error experimentation, users can develop systematic strategies based on observed patterns.
+Our approach, which visualizes the prompt-image space through two linked interactive graphs, enables users to efficiently explore the relationships between text prompts and their corresponding generated images, thus gaining an overview of the models concept drift. By interacting with both the scatter plot and the directed text-DAG, and iteratively as well as adding new prompt-image pairs based on their observations, users can quickly identify how specific prompt modifications influence the visual output. This process facilitates the generalization of the model's underlying behavior, allowing users to deduce its common tendencies such as a struggle with complex poses (e.g., "munching"), a tendency to generate in multiple styles given certain modifiers (e.g. black-and-white as well as color images for "drawing"), and a consistent accuracy in rendering backgrounds. These insights have practical value for prompt engineering especially for novice users. Understanding which prompt components reliably affect outputs versus which produce inconsistent results allows users to craft more effective prompts with fewer iterations. Rather than trial-and-error experimentation, users can develop systematic strategies based on observed patterns.
 
 The effectiveness of this method depends on sufficiently similar data. If the prompt-image pairs are too dissimilar, the DAG would fail to aggregate nodes meaningfully, resulting in excessive branching and an unwieldy structure. Similarly, the scatterplot would devolve into a disorganized set of points lacking meaningful clusters, thereby hindering the discovery of patterns. This is not a concern when the user uses the LLM-prompt-suggestion feature can however become one when adding many new dissimilar prompts.
 
 A technical limitation of our tool is its scalability. For large datasets exceeding 1,000 images, two significant challenges arise: long waits for responses from the image generation model and significant latency for the D3.js zooming and panning interactions. Furthermore, a crowded scatter plot necessitates the use of the lens and grid selection tools to resolve overlapping images, which adds a layer of interaction complexity.
 
-Our work occupies a distinct position in the landscape of prompt visualization tools. While systems like PromptMagician \cite{PromptMagician} provide granular control over model hyperparameters and attention mechanisms with a focus on clustered representative images, our tool prioritizes breadth of exploration over depth of control. This design choice reflects our goal of supporting discovery and understanding rather than fine-tuned generation.
-This trade-off has advantages: Lower cognitive load makes the tool accessible for users exploring unfamiliar models or beginning prompt engineering. The comprehensive view of the prompt-image space reveals patterns that might be missed when focusing on a few representative examples. However, this comes at the cost of advanced customization—users seeking precise control over attention weights or specific model parameters would benefit more from tools like PromptMagician.
+Our work occupies a distinct position in the landscape of prompt visualization tools. While systems like PromptMagician \cite{PromptMagician} provide granular control over model hyper parameters and attention mechanisms with a focus on clustered representative images, our tool prioritizes breadth of exploration over depth of control. 
+This trade-off has the disadvantage of: Lacking the more precise fine tune able control over attention weights and hyper parameters tools like PromptMagician provide. However it has a lower cognitive load that makes the tool accessible for users exploring unfamiliar models or beginning prompt engineering. As well as providing a comprehensive view of the prompt-image space that might reveal patterns that could be missed when focusing on a few representative examples.
 
 
 
@@ -640,9 +790,27 @@ This trade-off has advantages: Lower cognitive load makes the tool accessible fo
 
 
 
-\section{Outlook}
-Include hyper parameters, and model attention (for attention potentially vary word size in dag based on attention given to each word, hard for multiple prompts with different attention distribution, could be solved for single prompt by showing dag and attention sizes on hover of single image), try to add them in visualization, make images have wider variety, Improve ve response time (model and hardware issue),  allow user possibility to pick prompt alternatives.
-Divide an conquer approach allow free selection of images and display them in smaller scatter plot and dag if desired by user
+
+
+
+
+
+\chapter{conclusion}
+
+
+
+
+We presented Prompt Vision, a visual-interactive system for exploring concept drift in text-to-image generative models. Our dual visualization approach—combining a scatter plot showing semantic similarity with a DAG showing prompt structure—enables users to efficiently identify how prompt modifications trigger conceptual shifts in generated outputs.
+
+Our key contributions include: (1) a scalable visualization approach supporting exploration of 100s of prompt variations, (2) LLM-based prompt variations maintaining semantic relevance, (3) design patterns for our prompt engineering tool.
+
+Through our use case, we demonstrated that users can identify systematic model behaviors such as reliable background rendering but struggles with complex behaviors such as spying. This can infer more effective prompt engineering strategies. Providing practical value for novice users or when exploring new models. We enable more systematic exploration over pure trial-and-error experimentation.
+
+Our approach has limitations: it requires sufficiently structural similar text data and sufficiently visually similar image data (dissimilar prompts fragment the visualizations, while dissimilar images hinder visual analysis). It also faces scalability challenges beyond ~1,000 images (depending on hardware) as D3 struggles with the zoom and pan behavior. We only utilized one model to generate the test data and currently don't support live-generation in the prototype. These are challenges future work could address. Additionally trying to incorporate model attention and hyper parameters in the visual approach could provide the user with additional insights. 
+
+While systems like PromptMagician and promptCharm \cite{promptCharm,PromptMagician} provide fine-grained parameter control, and Promtify and promptThis \cite{brade2023promptifytexttoimagegenerationinteractive,guo2024prompthisvisualizingprocessinfluence} focus on smaller scale  visualization, we prioritize breadth of exploration, providing a holistic overview of concept drift. 
+
+
 
 \printbibliography
 
@@ -834,12 +1002,7 @@ Prompt for mixing all variations:
 	"""t...
 \end{verbatim}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{graphInteractionLong.png}
-	\caption{graph showing detailed graph interactions}
-	\label{fig:GraphInteractionLong}
-\end{figure}
+
 \pagestyle{empty}
 \renewcommand*{\chapterpagestyle}{empty}
 \Versicherung
