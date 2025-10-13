@@ -1,24 +1,9 @@
-digraph chains {
-    rankdir=LR;
-    node [shape=plaintext, fontname="Helvetica"];
+We presented Prompt Vision, a visual-interactive system for exploring concept drift in text-to-image generative models. Our dual visualization approach—combining a scatter plot showing semantic similarity with a DAG showing prompt structure—enables users to efficiently identify how prompt modifications trigger conceptual shifts in generated outputs.
 
-    // Chain 1
-    "photo realistic" -> "tiger sitting" -> "on" -> "apple" -> "in" -> "starry night extremely high quality";
+Our key contributions include: (1) a scalable visualization approach supporting exploration of 100s of prompt variations, (2) LLM based prompt variations maintaining semantic relevance, (3) design patterns for our prompt engineering tool.
 
-    // Chain 2
-    "drawing" -> "fantasy" -> "cow" -> "spying" -> "on" -> "fish" -> "in" -> "barn" -> "extremely high quality";
+Through our use case, we demonstrated that users can identify systematic model behaviors such as reliable background rendering but struggles with complex behaviors such as spying. This can infer more effective prompt engineering strategies. Providing practical value for novice users or when exploring new models. We enable more systematic exploration over pure trial-and-error experimentation.
 
-    // Chain 3
-    "photo realistic" -> "elephant" -> "munching" -> "on" -> "fish" -> "in" -> "forest masterpiece photography";
+Our approach has limitations: it requires sufficiently structural similar text data and sufficiently visually similar image data (dissimilar prompts fragment the visualizations, while dissimilar images hinder visual analysis). It also faces scalability challenges beyond ~1,000 images (depending on hardware) as D3 struggles with the zoom and pan behavior. We only utilized one model to generate the test data and currently don't support live-generation in the prototype. These are challenges future work could address. Additionally trying to incorporate model attention and hyper parameters in the visual approach could provide the user with additional insights. 
 
-    // Chain 4
-    "image" -> "fantasy" -> "elephant" -> "munching" -> "on" -> "fish" -> "in" -> "barn" -> "oil painting";
-
-    // Chain 5
-    "photo realistic" -> "elephant" -> "spying" -> "on" -> "fish" -> "in" -> "barn" -> "extremely high quality";
-}
-A Photo of a realistic Tiger sitting on a Apple in a starry night, extremely high quality
-A Photo of a realistic Elephant munching on a Fish in a Forest, masterpiece photography
-A Drawing of a fantasy Cow spying on a Fish in a Barn, extremely high quality
-A Photo of a realistic Elephant munching on a Fish in a Forest, masterpiece photography
-A Image of a fantasy Elephant munching on a Fish in a Barn, oil painting
+While systems like PromptMagician and promptCharm \cite{promptCharm,PromptMagician} provide fine-grained parameter control, and Promtify and promptThis \cite{brade2023promptifytexttoimagegenerationinteractive,guo2024prompthisvisualizingprocessinfluence} focus on smaller scale  visualization, we prioritize breadth of exploration, providing a holistic overview of concept drift. 
