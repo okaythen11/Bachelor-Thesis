@@ -721,12 +721,12 @@ D3.js (Data Driven Documents) is a JavaScript library for creating interactive a
 
 The key strength of D3 is its declarative data binding: datasets can directly drive the creation, transformation, and styling of visual elements. This makes it possible to build anything from simple bar charts to complex, interactive dashboards or exploratory visual analytics systems. Because of this versatility, D3 has become one of the most commonly used tools for web-based data visualization in both research and industry.
 
-\subsection{general framework}
+\subsection{General Framework}
 For the general framework of the web-application html, Java Script and Cascading Style Sheets was utilized for the frontend and python for the backend.
 This allows for fast light weight prototyping and easy adaptability. For the generative tasks we used as api call to GPT-5 a LLM and for the image generation task we used a stable diffusion model \cite{stableDiffusion}.
                                                                         
 
-\chapter{use case example}
+\chapter{Use Case example}
 A user wants to create an image using generative AI for a presentation. However, they are frustrated, during their last generation session, they had to adjust their prompt dozens of times before achieving a satisfactory result. Seeking a more efficient approach, they turn to prompt vision to gain better insight into how prompt modifications affect generated outputs, hoping to reduce time and iterations in future image creation tasks.\\
 First the user selects a model \footnote{Model selection is not implemented in the prototype} and enters a prompt in the dedicated field. They really like animals and come up with a scenario for an elephant as well as a quality tag they remember from last time \enquote{A photo of an elephant munching on a stack of hay in a barn, extremely high quality}. They select which words to vary and specify the desired length for alternatives \cref{fig:usecasePrompt1}. Next they choose to let the LLM mix all alternatives with each other curious to explore the different variations. While waiting on the tool response they decide to take a coffee break. 
 
@@ -764,7 +764,7 @@ Wanting to experiment with another style they repeat the process with a slightly
 
 
 
-\chapter{discussion}
+\chapter{Discussion}
 \label{chap:zusfas}
 
 Through our approach of generating many varied prompts, and visualizing the resulting prompt-image space through two linked interactive graphs, users can efficiently explore the relationships between text prompts and their corresponding generated images, thus gaining an overview of the models concept drift.\\ They can interact with both the scatter plot and the DAG which shows the link between the two, additionally they can iteratively add new prompt-image pairs based on their observations. This facilitates quick identification of how specific prompt modifications influence the visual output. Thus enabling the user to generalize the model's underlying behavior. In our case the model struggled with displaying complex behavior such as \enquote{munching} and tendency to generate in multiple styles given certain modifiers e.g. both black-and-white and color images for "drawing", we also obversed consistent accuracy in rendering backgrounds. \\ Insights such as these can have practical value for prompt engineering especially for novice users. Understanding which prompt components reliably or unreliably affect outputs allows users to craft desired prompts in fewer iterations. Rather than trial-and-error experimentation, users are given a tool for systematic exploration.
@@ -797,7 +797,7 @@ This has the disadvantage of: Lacking the more precise fine tune able control ov
 
 
 
-\chapter{conclusion}
+\chapter{Conclusion}
 
 
 
